@@ -43,7 +43,7 @@ export type ImagingType = 'ivus' | 'oct'
 
 export type PlaqueDebulkingType = 'rotablator' | 'shockwave' | 'laser'
 
-export type HemostasisType = 'perclose_prostyle' | 'angio_seal' | 'vascade' | 'manta'
+export type HemostasisType = 'tr_band' | 'perclose_prostyle' | 'angio_seal' | 'vascade' | 'manta'
 
 export type PciVessel =
   | 'tc'
@@ -207,7 +207,7 @@ export interface StatsResult {
   totalEntries: number
   pendingSync: number
   byType: StatsDatum[]
-  byRole: StatsDatum[]
+  byTypeAndRole: StatsDatum[]
   byAccessSite: StatsDatum[]
   byCannulation: StatsDatum[]
   byHemostasis: StatsDatum[]

@@ -17,7 +17,7 @@ const items = [
 
 function BottomNav() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/50 bg-white/85 px-4 pb-[calc(env(safe-area-inset-bottom)+0.35rem)] pt-2 backdrop-blur-xl">
+    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/50 bg-white/85 px-4 pb-[calc(env(safe-area-inset-bottom)+0.1rem)] pt-2 backdrop-blur-xl">
       <ul className="mx-auto grid max-w-3xl grid-cols-5 gap-2">
         {items.map((item) => (
           <li key={item.to}>

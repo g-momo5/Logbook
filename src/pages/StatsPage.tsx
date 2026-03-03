@@ -7,7 +7,7 @@ const emptyStats: StatsResult = {
   totalEntries: 0,
   pendingSync: 0,
   byType: [],
-  byRole: [],
+  byTypeAndRole: [],
   byAccessSite: [],
   byCannulation: [],
   byHemostasis: [],
@@ -125,7 +125,7 @@ function StatsPage() {
 
       <div className="grid gap-5 lg:grid-cols-2">
         <StatList title="Per tipo procedura" items={stats.byType} />
-        <StatList title="Per ruolo" items={stats.byRole} />
+        <StatList title="Per procedura + ruolo" items={stats.byTypeAndRole} />
         <StatList title="Per accesso" items={stats.byAccessSite} />
         <StatList title="Per incannulazione" items={stats.byCannulation} />
         <StatList title="Per emostasi" items={stats.byHemostasis} />

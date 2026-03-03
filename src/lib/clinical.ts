@@ -125,6 +125,7 @@ export const plaqueDebulkingOptions: Option<PlaqueDebulkingType>[] = [
 ]
 
 export const hemostasisOptions: Option<HemostasisType>[] = [
+  { value: 'tr_band', label: 'TR Band' },
   { value: 'perclose_prostyle', label: 'Perclose ProStyle' },
   { value: 'angio_seal', label: 'Angio-Seal' },
   { value: 'vascade', label: 'VASCADE' },

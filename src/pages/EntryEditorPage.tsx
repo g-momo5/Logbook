@@ -260,7 +260,6 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
     setForm((current) => ({
       ...current,
       accessSite: value,
-      hemostasis: value === 'femorale' ? current.hemostasis : '',
     }))
   }
 
@@ -378,7 +377,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
           procedureKind: 'coronarografia',
           details: {
             accessSite: form.accessSite || null,
-            hemostasis: form.accessSite === 'femorale' ? form.hemostasis || null : null,
+            hemostasis: form.hemostasis || null,
             cannulations: form.cannulations,
           },
         })
@@ -388,7 +387,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
           procedureKind: 'coronarografia_angioplastica',
           details: {
             accessSite: form.accessSite || null,
-            hemostasis: form.accessSite === 'femorale' ? form.hemostasis || null : null,
+            hemostasis: form.hemostasis || null,
             cannulations: form.cannulations,
             angioplastyTechniques: form.angioplastyTechniques,
             treatments: form.treatments,
@@ -513,6 +512,10 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
             value={form.operatorRole}
             onChange={(value) => setField('operatorRole', value as OperatorRole)}
           />
+          <p className="mt-3 text-sm leading-6 text-slate-600">
+            Compila i campi sotto solo per le attivita eseguite da te come primo operatore, anche
+            se il ruolo complessivo della procedura e secondo operatore.
+          </p>
         </div>
 
         <div>
@@ -660,19 +663,17 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
           </>
         ) : null}
 
-        {form.accessSite === 'femorale' ? (
-          <div>
-            <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Emostasi
-            </span>
-            <ChoiceGrid
-              options={hemostasisOptions}
-              value={form.hemostasis}
-              onChange={(value) => setField('hemostasis', value as HemostasisType)}
-              allowClear
-            />
-          </div>
-        ) : null}
+        <div>
+          <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+            Emostasi
+          </span>
+          <ChoiceGrid
+            options={hemostasisOptions}
+            value={form.hemostasis}
+            onChange={(value) => setField('hemostasis', value as HemostasisType)}
+            allowClear
+          />
+        </div>
 
         <label className="block">
           <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">

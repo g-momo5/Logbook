@@ -20,7 +20,7 @@ function AppShell() {
     <div className="relative min-h-screen pb-32">
       <div
         className="mx-auto flex min-h-screen max-w-3xl flex-col px-4 pb-24 sm:px-6"
-        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}
+        style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1.25rem)' }}
       >
         <header className="rounded-[32px] border border-white/50 bg-white/70 p-5 shadow-[0_24px_80px_rgba(11,93,86,0.1)] backdrop-blur-xl">
           <div className="flex flex-wrap items-start gap-3">

@@ -100,7 +100,11 @@ export function getStatsFromEntries(entries: ProcedureEntry[], query: StatsQuery
     .filter((entry) => isEntryInRange(entry, query))
 
   const byType = mapCountByLabel(activeEntries.map((entry) => getProcedureLabel(entry.procedureKind)))
-  const byRole = mapCountByLabel(activeEntries.map((entry) => getOperatorRoleLabel(entry.operatorRole)))
+  const byTypeAndRole = mapCountByLabel(
+    activeEntries.map(
+      (entry) => `${getProcedureLabel(entry.procedureKind)} · ${getOperatorRoleLabel(entry.operatorRole)}`,
+    ),
+  )
   const byAccessSite = mapCountByLabel(
     activeEntries
       .map((entry) => getAccessSiteLabel(entry.details.accessSite))
@@ -163,7 +167,7 @@ export function getStatsFromEntries(entries: ProcedureEntry[], query: StatsQuery
     totalEntries: activeEntries.length,
     pendingSync: activeEntries.filter((entry) => entry.syncStatus !== 'synced').length,
     byType,
-    byRole,
+    byTypeAndRole,
     byAccessSite,
     byCannulation,
     byHemostasis,

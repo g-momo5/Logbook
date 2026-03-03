@@ -28,7 +28,7 @@ const angioplastyTechniqueValues = [
 const treatmentValues = ['des', 'bms', 'dcb'] as const
 const imagingValues = ['ivus', 'oct'] as const
 const plaqueDebulkingValues = ['rotablator', 'shockwave', 'laser'] as const
-const hemostasisValues = ['perclose_prostyle', 'angio_seal', 'vascade', 'manta'] as const
+const hemostasisValues = ['tr_band', 'perclose_prostyle', 'angio_seal', 'vascade', 'manta'] as const
 const pciVesselValues = ['tc', 'iva', 'cx', 'cdx', 'd1', 'd2', 'mo1', 'mo2', 'ramo_intermedio'] as const
 const vesselSegmentValues = ['prossimale', 'medio', 'distale'] as const
 
@@ -96,14 +96,6 @@ const coronarografiaDraftSchema = z.object({
     accessSite: accessSiteSchema.nullable(),
     hemostasis: hemostasisSchema.nullable(),
     cannulations: uniqueCannulationsSchema,
-  }).superRefine((value, ctx) => {
-    if (value.accessSite !== 'femorale' && value.hemostasis) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['hemostasis'],
-        message: 'L’emostasi è disponibile solo con accesso femorale.',
-      })
-    }
   }),
 })
 
@@ -119,14 +111,6 @@ const coronarografiaAngioplasticaDraftSchema = z.object({
     imaging: uniqueImagingSchema,
     plaqueDebulking: uniqueDebulkingSchema,
     treatedSegments: treatedSegmentsSchema,
-  }).superRefine((value, ctx) => {
-    if (value.accessSite !== 'femorale' && value.hemostasis) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['hemostasis'],
-        message: 'L’emostasi è disponibile solo con accesso femorale.',
-      })
-    }
   }),
 })
 
@@ -278,8 +262,7 @@ export async function saveEntry(input: ProcedureEntryDraft) {
           details: {
             kind: 'coronarografia',
             accessSite: parsedInput.details.accessSite,
-            hemostasis:
-              parsedInput.details.accessSite === 'femorale' ? parsedInput.details.hemostasis : null,
+            hemostasis: parsedInput.details.hemostasis,
             cannulations: parsedInput.details.cannulations,
           },
         }
@@ -289,8 +272,7 @@ export async function saveEntry(input: ProcedureEntryDraft) {
           details: {
             kind: 'coronarografia_angioplastica',
             accessSite: parsedInput.details.accessSite,
-            hemostasis:
-              parsedInput.details.accessSite === 'femorale' ? parsedInput.details.hemostasis : null,
+            hemostasis: parsedInput.details.hemostasis,
             cannulations: parsedInput.details.cannulations,
             angioplastyTechniques: parsedInput.details.angioplastyTechniques,
             treatments: parsedInput.details.treatments,

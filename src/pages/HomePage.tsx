@@ -13,7 +13,7 @@ const emptyStats: StatsResult = {
   totalEntries: 0,
   pendingSync: 0,
   byType: [],
-  byRole: [],
+  byTypeAndRole: [],
   byAccessSite: [],
   byCannulation: [],
   byHemostasis: [],

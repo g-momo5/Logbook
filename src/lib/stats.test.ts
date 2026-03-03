@@ -37,7 +37,7 @@ const baseEntries: ProcedureEntry[] = [
     details: {
       kind: 'coronarografia_angioplastica',
       accessSite: 'femorale',
-      hemostasis: 'manta',
+      hemostasis: 'tr_band',
       cannulations: ['coronaria_destra'],
       angioplastyTechniques: ['cutting_balloon', 'scoring_balloon'],
       treatments: ['des'],
@@ -63,9 +63,9 @@ describe('stats helpers', () => {
     expect(stats.totalEntries).toBe(2)
     expect(stats.pendingSync).toBe(1)
     expect(stats.byType[0].count).toBe(1)
-    expect(stats.byRole).toEqual([
-      { label: 'Primo operatore', count: 1 },
-      { label: 'Secondo operatore', count: 1 },
+    expect(stats.byTypeAndRole).toEqual([
+      { label: 'Coronarografia · Primo operatore', count: 1 },
+      { label: 'Coronarografia + Angioplastica · Secondo operatore', count: 1 },
     ])
     expect(stats.byAccessSite).toEqual([
       { label: 'Femorale', count: 1 },
@@ -75,7 +75,7 @@ describe('stats helpers', () => {
       { label: 'Coronaria destra', count: 1 },
       { label: 'Coronaria sinistra', count: 1 },
     ])
-    expect(stats.byHemostasis).toEqual([{ label: 'MANTA', count: 1 }])
+    expect(stats.byHemostasis).toEqual([{ label: 'TR Band', count: 1 }])
     expect(stats.byAngioplastyTechnique).toEqual([
       { label: 'Cutting balloon', count: 1 },
       { label: 'Scoring balloon', count: 1 },
