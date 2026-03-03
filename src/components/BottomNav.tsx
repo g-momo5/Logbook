@@ -17,7 +17,7 @@ const items = [
 
 function BottomNav() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/50 bg-white/85 px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-3 backdrop-blur-xl">
+    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/50 bg-white/85 px-4 pb-[calc(env(safe-area-inset-bottom)+0.35rem)] pt-2 backdrop-blur-xl">
       <ul className="mx-auto grid max-w-3xl grid-cols-5 gap-2">
         {items.map((item) => (
           <li key={item.to}>
@@ -26,7 +26,7 @@ function BottomNav() {
               aria-label={item.label}
               title={item.label}
               className={({ isActive }) =>
-                `flex min-h-14 items-center justify-center rounded-3xl px-2 text-center transition ${
+                `flex h-12 items-center justify-center rounded-3xl px-2 text-center transition ${
                   isActive
                     ? 'bg-teal-800 text-white shadow-lg shadow-teal-900/20'
                     : 'bg-white/60 text-slate-600 ring-1 ring-slate-900/5'

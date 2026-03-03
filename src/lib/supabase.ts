@@ -1,8 +1,67 @@
 import { createClient, type Session, type SupabaseClient } from '@supabase/supabase-js'
 
 import { appEnv, hasSupabaseConfig } from './env'
+import { db, ensureBootstrapped } from './db'
 
 let supabaseClient: SupabaseClient | null = null
+const AUTH_STORAGE_KEY = 'logbook-supabase-auth'
+const AUTH_META_KEY_PREFIX = 'supabase-auth:'
+
+function getAuthMetaKey(key: string) {
+  return `${AUTH_META_KEY_PREFIX}${key}`
+}
+
+function getLocalStorage() {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  try {
+    return window.localStorage
+  } catch {
+    return null
+  }
+}
+
+const supabaseAuthStorage = {
+  async getItem(key: string) {
+    try {
+      await ensureBootstrapped()
+      const record = await db.meta.get(getAuthMetaKey(key))
+
+      if (record) {
+        return record.value
+      }
+    } catch {
+      // Fall through to localStorage lookup.
+    }
+
+    return getLocalStorage()?.getItem(getAuthMetaKey(key)) ?? null
+  },
+  async setItem(key: string, value: string) {
+    try {
+      await ensureBootstrapped()
+      await db.meta.put({
+        key: getAuthMetaKey(key),
+        value,
+      })
+    } catch {
+      // Best effort: still mirror to localStorage below.
+    }
+
+    getLocalStorage()?.setItem(getAuthMetaKey(key), value)
+  },
+  async removeItem(key: string) {
+    try {
+      await ensureBootstrapped()
+      await db.meta.delete(getAuthMetaKey(key))
+    } catch {
+      // Keep removing the localStorage mirror below.
+    }
+
+    getLocalStorage()?.removeItem(getAuthMetaKey(key))
+  },
+}
 
 export function getSupabaseClient() {
   if (!hasSupabaseConfig) {
@@ -15,6 +74,8 @@ export function getSupabaseClient() {
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: false,
+        storageKey: AUTH_STORAGE_KEY,
+        storage: supabaseAuthStorage,
       },
     })
   }
