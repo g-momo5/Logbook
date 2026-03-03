@@ -21,7 +21,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['app-icon.svg', 'apple-touch-icon.svg', 'maskable-icon.svg'],
+      includeAssets: ['app_logo.svg'],
       manifest: {
         name: 'Sala Logbook',
         short_name: 'Logbook',
@@ -37,13 +37,13 @@ export default defineConfig({
         categories: ['medical', 'productivity', 'utilities'],
         icons: [
           {
-            src: '/app-icon.svg',
+            src: '/app_logo.svg',
             sizes: 'any',
             type: 'image/svg+xml',
             purpose: 'any',
           },
           {
-            src: '/maskable-icon.svg',
+            src: '/app_logo.svg',
             sizes: 'any',
             type: 'image/svg+xml',
             purpose: 'maskable',
