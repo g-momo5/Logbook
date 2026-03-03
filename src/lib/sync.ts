@@ -72,7 +72,7 @@ function compareIsoTimestamps(left: string, right: string) {
     return leftMs - rightMs
   }
 
-  return left.localeCompare(right)
+  return 0
 }
 
 function getComparableEntry(entry: ProcedureEntry) {
