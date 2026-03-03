@@ -10,6 +10,24 @@ import type {
   SyncReport,
 } from '../types'
 
+function getSyncErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof error.message === 'string' &&
+    error.message.trim()
+  ) {
+    return error.message
+  }
+
+  return 'Errore di sincronizzazione'
+}
+
 function getOnlineStatus() {
   if (typeof navigator === 'undefined') {
     return true
@@ -149,7 +167,7 @@ export async function syncPending(): Promise<SyncReport> {
 
       processed += 1
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Errore di sincronizzazione'
+      const message = getSyncErrorMessage(error)
       errors.push(message)
       await markEntryAsError(job.entryId, message, job)
     }
