@@ -43,6 +43,8 @@ export type ImagingType = 'ivus' | 'oct'
 
 export type PlaqueDebulkingType = 'rotablator' | 'shockwave' | 'laser'
 
+export type HemostasisType = 'perclose_prostyle' | 'angio_seal' | 'vascade' | 'manta'
+
 export type PciVessel =
   | 'tc'
   | 'iva'
@@ -64,12 +66,14 @@ export interface TreatedSegment {
 export interface CoronarografiaDetails {
   kind: 'coronarografia'
   accessSite: AccessSite | null
+  hemostasis: HemostasisType | null
   cannulations: Cannulation[]
 }
 
 export interface CoronarografiaAngioplasticaDetails {
   kind: 'coronarografia_angioplastica'
   accessSite: AccessSite | null
+  hemostasis: HemostasisType | null
   cannulations: Cannulation[]
   angioplastyTechniques: AngioplastyTechnique[]
   treatments: TreatmentType[]
@@ -205,11 +209,14 @@ export interface StatsResult {
   byType: StatsDatum[]
   byRole: StatsDatum[]
   byAccessSite: StatsDatum[]
+  byCannulation: StatsDatum[]
+  byHemostasis: StatsDatum[]
   byAngioplastyTechnique: StatsDatum[]
   byTreatment: StatsDatum[]
   byImaging: StatsDatum[]
   byDebulking: StatsDatum[]
   byTreatedVessel: StatsDatum[]
+  byTreatedSegment: StatsDatum[]
 }
 
 export interface SyncReport {

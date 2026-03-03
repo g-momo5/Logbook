@@ -16,6 +16,7 @@ const baseEntries: ProcedureEntry[] = [
     details: {
       kind: 'coronarografia',
       accessSite: 'radiale_destro',
+      hemostasis: null,
       cannulations: ['coronaria_sinistra'],
     },
     createdAt: '2026-03-03T10:00:00.000Z',
@@ -36,6 +37,7 @@ const baseEntries: ProcedureEntry[] = [
     details: {
       kind: 'coronarografia_angioplastica',
       accessSite: 'femorale',
+      hemostasis: 'manta',
       cannulations: ['coronaria_destra'],
       angioplastyTechniques: ['cutting_balloon', 'scoring_balloon'],
       treatments: ['des'],
@@ -69,6 +71,11 @@ describe('stats helpers', () => {
       { label: 'Femorale', count: 1 },
       { label: 'Radiale destro', count: 1 },
     ])
+    expect(stats.byCannulation).toEqual([
+      { label: 'Coronaria destra', count: 1 },
+      { label: 'Coronaria sinistra', count: 1 },
+    ])
+    expect(stats.byHemostasis).toEqual([{ label: 'MANTA', count: 1 }])
     expect(stats.byAngioplastyTechnique).toEqual([
       { label: 'Cutting balloon', count: 1 },
       { label: 'Scoring balloon', count: 1 },
@@ -76,6 +83,10 @@ describe('stats helpers', () => {
     expect(stats.byTreatment).toEqual([{ label: 'DES', count: 1 }])
     expect(stats.byImaging).toEqual([{ label: 'IVUS', count: 1 }])
     expect(stats.byDebulking).toEqual([{ label: 'ShockWave', count: 1 }])
+    expect(stats.byTreatedSegment).toEqual([
+      { label: 'IVA · Medio', count: 1 },
+      { label: 'IVA · Prossimale', count: 1 },
+    ])
     expect(stats.byTreatedVessel).toEqual([{ label: 'IVA', count: 2 }])
   })
 })

@@ -301,6 +301,9 @@ function toLocalEntry(row: ProcedureEntryRemoteRow): ProcedureEntry {
   const accessSite = ((typeof rawDetails.accessSite === 'string'
     ? rawDetails.accessSite
     : row.access_site) ?? null) as CoronarografiaDetails['accessSite']
+  const hemostasis = (
+    typeof rawDetails.hemostasis === 'string' ? rawDetails.hemostasis : null
+  ) as CoronarografiaDetails['hemostasis']
 
   if (row.procedure_kind === 'coronarografia') {
     return {
@@ -315,6 +318,7 @@ function toLocalEntry(row: ProcedureEntryRemoteRow): ProcedureEntry {
       details: {
         kind: 'coronarografia',
         accessSite,
+        hemostasis,
         cannulations: asStringArray(rawDetails.cannulations) as CoronarografiaDetails['cannulations'],
       },
       createdAt: row.created_at,
@@ -354,6 +358,7 @@ function toLocalEntry(row: ProcedureEntryRemoteRow): ProcedureEntry {
       details: {
         kind: 'coronarografia_angioplastica',
         accessSite,
+        hemostasis,
         cannulations: asStringArray(rawDetails.cannulations) as CoronarografiaAngioplasticaDetails['cannulations'],
         angioplastyTechniques: asStringArray(
           rawDetails.angioplastyTechniques,

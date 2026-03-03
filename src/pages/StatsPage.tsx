@@ -9,11 +9,14 @@ const emptyStats: StatsResult = {
   byType: [],
   byRole: [],
   byAccessSite: [],
+  byCannulation: [],
+  byHemostasis: [],
   byAngioplastyTechnique: [],
   byTreatment: [],
   byImaging: [],
   byDebulking: [],
   byTreatedVessel: [],
+  byTreatedSegment: [],
 }
 
 const rangeOptions: Array<{ value: StatsRange; label: string }> = [
@@ -52,7 +55,7 @@ function StatList({
 }
 
 function StatsPage() {
-  const [range, setRange] = useState<StatsRange>('week')
+  const [range, setRange] = useState<StatsRange>('all')
   const [stats, setStats] = useState<StatsResult>(emptyStats)
 
   useEffect(() => {
@@ -122,13 +125,16 @@ function StatsPage() {
 
       <div className="grid gap-5 lg:grid-cols-2">
         <StatList title="Per tipo procedura" items={stats.byType} />
-        <StatList title="Per grado" items={stats.byRole} />
+        <StatList title="Per ruolo" items={stats.byRole} />
         <StatList title="Per accesso" items={stats.byAccessSite} />
+        <StatList title="Per incannulazione" items={stats.byCannulation} />
+        <StatList title="Per emostasi" items={stats.byHemostasis} />
         <StatList title="Tecniche angioplastica" items={stats.byAngioplastyTechnique} />
         <StatList title="Trattamenti" items={stats.byTreatment} />
         <StatList title="Imaging" items={stats.byImaging} />
         <StatList title="Debulking" items={stats.byDebulking} />
         <StatList title="Vasi trattati" items={stats.byTreatedVessel} />
+        <StatList title="Per vaso + tratto" items={stats.byTreatedSegment} />
       </div>
     </div>
   )

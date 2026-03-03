@@ -1,12 +1,15 @@
 import {
   getAccessSiteLabel,
   getAngioplastyTechniqueLabel,
+  getCannulationLabel,
+  getHemostasisLabel,
   getImagingLabel,
   getOperatorRoleLabel,
   getPciVesselLabel,
   getPlaqueDebulkingLabel,
   getProcedureLabel,
   getTreatmentLabel,
+  getVesselSegmentLabel,
 } from './clinical'
 import { db, ensureBootstrapped } from './db'
 import { todayDateValue } from './format'
@@ -103,6 +106,14 @@ export function getStatsFromEntries(entries: ProcedureEntry[], query: StatsQuery
       .map((entry) => getAccessSiteLabel(entry.details.accessSite))
       .filter((value): value is string => Boolean(value)),
   )
+  const byCannulation = mapCountByLabel(
+    activeEntries.flatMap((entry) => entry.details.cannulations.map((item) => getCannulationLabel(item))),
+  )
+  const byHemostasis = mapCountByLabel(
+    activeEntries
+      .map((entry) => getHemostasisLabel(entry.details.hemostasis))
+      .filter((value): value is string => Boolean(value)),
+  )
   const byAngioplastyTechnique = mapCountByLabel(
     activeEntries.flatMap((entry) =>
       entry.procedureKind === 'coronarografia_angioplastica'
@@ -138,6 +149,15 @@ export function getStatsFromEntries(entries: ProcedureEntry[], query: StatsQuery
         : [],
     ),
   )
+  const byTreatedSegment = mapCountByLabel(
+    activeEntries.flatMap((entry) =>
+      entry.procedureKind === 'coronarografia_angioplastica'
+        ? entry.details.treatedSegments.map(
+            (item) => `${getPciVesselLabel(item.vessel)} · ${getVesselSegmentLabel(item.segment)}`,
+          )
+        : [],
+    ),
+  )
 
   return {
     totalEntries: activeEntries.length,
@@ -145,11 +165,14 @@ export function getStatsFromEntries(entries: ProcedureEntry[], query: StatsQuery
     byType,
     byRole,
     byAccessSite,
+    byCannulation,
+    byHemostasis,
     byAngioplastyTechnique,
     byTreatment,
     byImaging,
     byDebulking,
     byTreatedVessel,
+    byTreatedSegment,
   }
 }
 

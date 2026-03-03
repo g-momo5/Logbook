@@ -6,6 +6,7 @@ import {
   angioplastyTechniqueOptions,
   cannulationOptions,
   getProcedureLabel,
+  hemostasisOptions,
   imagingOptions,
   operatorRoleOptions,
   pciVesselOptions,
@@ -21,6 +22,7 @@ import type {
   AccessSite,
   AngioplastyTechnique,
   Cannulation,
+  HemostasisType,
   ImagingType,
   OperatorRole,
   PciVessel,
@@ -52,6 +54,7 @@ interface FormState {
   operatorRole: OperatorRole | ''
   notes: string
   accessSite: AccessSite | ''
+  hemostasis: HemostasisType | ''
   cannulations: Cannulation[]
   angioplastyTechniques: AngioplastyTechnique[]
   treatments: TreatmentType[]
@@ -66,6 +69,7 @@ function createInitialFormState(): FormState {
     operatorRole: '',
     notes: '',
     accessSite: '',
+    hemostasis: '',
     cannulations: [],
     angioplastyTechniques: [],
     treatments: [],
@@ -87,10 +91,12 @@ function ChoiceGrid({
   options,
   value,
   onChange,
+  allowClear = false,
 }: {
   options: ChoiceOption[]
   value: string
   onChange: (value: string) => void
+  allowClear?: boolean
 }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
@@ -101,7 +107,7 @@ function ChoiceGrid({
           <button
             key={option.value}
             type="button"
-            onClick={() => onChange(option.value)}
+            onClick={() => onChange(isActive && allowClear ? '' : option.value)}
             className={`rounded-3xl px-4 py-4 text-left text-sm font-semibold transition ${
               isActive
                 ? 'bg-teal-800 text-white shadow-lg shadow-teal-900/20'
@@ -217,6 +223,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
         operatorRole: entry.operatorRole,
         notes: entry.notes,
         accessSite: entry.details.accessSite ?? '',
+        hemostasis: entry.details.hemostasis ?? '',
         cannulations: entry.details.cannulations,
         angioplastyTechniques:
           entry.procedureKind === 'coronarografia_angioplastica'
@@ -246,6 +253,14 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
     setForm((current) => ({
       ...current,
       [field]: value,
+    }))
+  }
+
+  function handleAccessSiteChange(value: AccessSite | '') {
+    setForm((current) => ({
+      ...current,
+      accessSite: value,
+      hemostasis: value === 'femorale' ? current.hemostasis : '',
     }))
   }
 
@@ -327,7 +342,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
     }
 
     if (!form.operatorRole) {
-      setSubmitError('Il grado è obbligatorio.')
+      setSubmitError('Il ruolo è obbligatorio.')
       return
     }
 
@@ -363,6 +378,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
           procedureKind: 'coronarografia',
           details: {
             accessSite: form.accessSite || null,
+            hemostasis: form.accessSite === 'femorale' ? form.hemostasis || null : null,
             cannulations: form.cannulations,
           },
         })
@@ -372,6 +388,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
           procedureKind: 'coronarografia_angioplastica',
           details: {
             accessSite: form.accessSite || null,
+            hemostasis: form.accessSite === 'femorale' ? form.hemostasis || null : null,
             cannulations: form.cannulations,
             angioplastyTechniques: form.angioplastyTechniques,
             treatments: form.treatments,
@@ -489,7 +506,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
 
         <div>
           <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Grado
+            Ruolo
           </span>
           <ChoiceGrid
             options={operatorRoleOptions}
@@ -502,23 +519,11 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
           <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
             Accesso
           </span>
-          <div className="mb-3">
-            <button
-              type="button"
-              onClick={() => setField('accessSite', '')}
-              className={`rounded-3xl px-4 py-3 text-sm font-semibold ${
-                form.accessSite === ''
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-900/5 text-slate-700'
-              }`}
-            >
-              Nessuno
-            </button>
-          </div>
           <ChoiceGrid
             options={accessSiteOptions}
             value={form.accessSite}
-            onChange={(value) => setField('accessSite', value as AccessSite)}
+            onChange={(value) => handleAccessSiteChange(value as AccessSite | '')}
+            allowClear
           />
         </div>
 
@@ -653,6 +658,20 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
               )}
             </div>
           </>
+        ) : null}
+
+        {form.accessSite === 'femorale' ? (
+          <div>
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Emostasi
+            </span>
+            <ChoiceGrid
+              options={hemostasisOptions}
+              value={form.hemostasis}
+              onChange={(value) => setField('hemostasis', value as HemostasisType)}
+              allowClear
+            />
+          </div>
         ) : null}
 
         <label className="block">

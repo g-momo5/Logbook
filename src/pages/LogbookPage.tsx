@@ -96,7 +96,7 @@ function LogbookPage() {
                 const nextValue = event.target.value
                 startTransition(() => setSearch(nextValue))
               }}
-              placeholder="Procedura, grado, accesso o note"
+              placeholder="Procedura, ruolo, accesso o note"
               className="w-full rounded-3xl border border-slate-900/5 bg-white px-4 py-4 text-base text-slate-950 outline-none"
             />
           </label>
@@ -121,7 +121,7 @@ function LogbookPage() {
 
           <label className="block">
             <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-              Grado
+              Ruolo
             </span>
             <select
               value={selectedRole}

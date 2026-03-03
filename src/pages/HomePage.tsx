@@ -15,11 +15,14 @@ const emptyStats: StatsResult = {
   byType: [],
   byRole: [],
   byAccessSite: [],
+  byCannulation: [],
+  byHemostasis: [],
   byAngioplastyTechnique: [],
   byTreatment: [],
   byImaging: [],
   byDebulking: [],
   byTreatedVessel: [],
+  byTreatedSegment: [],
 }
 
 function HomePage() {
@@ -82,22 +85,6 @@ function HomePage() {
         </div>
       </section>
 
-      <InstallHintCard />
-
-      <section className="rounded-[28px] border border-white/60 bg-white/80 p-5 shadow-[0_20px_60px_rgba(11,93,86,0.08)] backdrop-blur-xl">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Accesso</p>
-            <p className="mt-2 text-sm leading-6 text-slate-700">
-              {sessionEmail ? `Cloud collegato come ${sessionEmail}.` : 'Cloud non collegato: la sync resta in pausa.'}
-            </p>
-          </div>
-          <div className="rounded-3xl bg-slate-900/5 px-4 py-3 text-sm font-medium text-slate-700">
-            {pinConfigured ? 'PIN locale attivo' : 'PIN locale da impostare'}
-          </div>
-        </div>
-      </section>
-
       <section className="rounded-[28px] border border-white/60 bg-white/80 p-5 shadow-[0_20px_60px_rgba(11,93,86,0.08)] backdrop-blur-xl">
         <div className="mb-4 flex items-center justify-between">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Ultime procedure</p>
@@ -136,6 +123,22 @@ function HomePage() {
           </div>
         )}
       </section>
+
+      <section className="rounded-[28px] border border-white/60 bg-white/80 p-5 shadow-[0_20px_60px_rgba(11,93,86,0.08)] backdrop-blur-xl">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Accesso</p>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              {sessionEmail ? `Cloud collegato come ${sessionEmail}.` : 'Cloud non collegato: la sync resta in pausa.'}
+            </p>
+          </div>
+          <div className="rounded-3xl bg-slate-900/5 px-4 py-3 text-sm font-medium text-slate-700">
+            {pinConfigured ? 'PIN locale attivo' : 'PIN locale da impostare'}
+          </div>
+        </div>
+      </section>
+
+      <InstallHintCard />
     </div>
   )
 }

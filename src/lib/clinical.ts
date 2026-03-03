@@ -2,6 +2,7 @@ import type {
   AccessSite,
   AngioplastyTechnique,
   Cannulation,
+  HemostasisType,
   ImagingType,
   OperatorRole,
   PciVessel,
@@ -123,6 +124,13 @@ export const plaqueDebulkingOptions: Option<PlaqueDebulkingType>[] = [
   { value: 'laser', label: 'Laser' },
 ]
 
+export const hemostasisOptions: Option<HemostasisType>[] = [
+  { value: 'perclose_prostyle', label: 'Perclose ProStyle' },
+  { value: 'angio_seal', label: 'Angio-Seal' },
+  { value: 'vascade', label: 'VASCADE' },
+  { value: 'manta', label: 'MANTA' },
+]
+
 export const pciVesselOptions: Option<PciVessel>[] = [
   { value: 'tc', label: 'TC' },
   { value: 'iva', label: 'IVA' },
@@ -179,6 +187,10 @@ export function getImagingLabel(imaging: ImagingType) {
 
 export function getPlaqueDebulkingLabel(value: PlaqueDebulkingType) {
   return getLabel(plaqueDebulkingOptions, value) ?? value
+}
+
+export function getHemostasisLabel(value: HemostasisType | null) {
+  return getLabel(hemostasisOptions, value)
 }
 
 export function getPciVesselLabel(vessel: PciVessel) {

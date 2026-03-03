@@ -2,6 +2,7 @@ import {
   getAccessSiteLabel,
   getAngioplastyTechniqueLabel,
   getCannulationLabel,
+  getHemostasisLabel,
   getImagingLabel,
   getPciVesselLabel,
   getPlaqueDebulkingLabel,
@@ -27,6 +28,7 @@ export function serializeEntriesToCsv(entries: ProcedureEntry[]) {
     'operator_role',
     'card_summary',
     'access_site',
+    'hemostasis',
     'cannulations',
     'angioplasty_techniques',
     'treatments',
@@ -49,6 +51,7 @@ export function serializeEntriesToCsv(entries: ProcedureEntry[]) {
       entry.operatorRole,
       entry.cardSummary,
       getAccessSiteLabel(entry.details.accessSite) ?? '',
+      getHemostasisLabel(entry.details.hemostasis) ?? '',
       serializeArray(entry.details.cannulations.map((value) => getCannulationLabel(value))),
       serializeArray(
         entry.procedureKind === 'coronarografia_angioplastica'
