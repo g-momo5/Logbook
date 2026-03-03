@@ -22,11 +22,8 @@ function AppShell() {
         <header className="rounded-[32px] border border-white/50 bg-white/70 p-5 shadow-[0_24px_80px_rgba(11,93,86,0.1)] backdrop-blur-xl">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-800">
-                Sala Logbook
-              </p>
-              <h1 className="mt-2 font-['Iowan_Old_Style','Palatino_Linotype',serif] text-3xl text-slate-950">
-                Registro procedure offline-first
+              <h1 className="text-lg font-semibold uppercase tracking-[0.24em] text-teal-800 sm:text-xl">
+                Logbook Emodinamica
               </h1>
             </div>
 

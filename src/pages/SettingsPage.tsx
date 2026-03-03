@@ -6,7 +6,7 @@ import { formatRelativeDate } from '../lib/format'
 import { hasSupabaseConfig } from '../lib/env'
 import { setPin } from '../lib/lock'
 import { signInWithPassword, signOut, signUpWithPassword } from '../lib/supabase'
-import { syncPending } from '../lib/sync'
+import { formatSyncSuccessMessage, syncPending } from '../lib/sync'
 import { refreshAppSnapshot, useAppStore } from '../store/app-store'
 
 function SettingsPage() {
@@ -51,7 +51,7 @@ function SettingsPage() {
       return
     }
 
-    setSyncState('idle', report.processed > 0 ? `Sincronizzati ${report.processed} record.` : 'Nessun record da inviare.')
+    setSyncState('idle', formatSyncSuccessMessage(report))
   }
 
   async function handleAuthSubmit(mode: 'sign-in' | 'sign-up') {

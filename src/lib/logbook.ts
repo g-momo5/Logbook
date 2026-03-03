@@ -115,7 +115,7 @@ const entryDraftSchema = z.discriminatedUnion('procedureKind', [
   coronarografiaAngioplasticaDraftSchema,
 ])
 
-function toRemotePayload(entry: ProcedureEntry): ProcedureEntryRemotePayload {
+export function toRemotePayload(entry: ProcedureEntry): ProcedureEntryRemotePayload {
   if (entry.procedureKind === 'coronarografia') {
     return {
       id: entry.id,
@@ -151,27 +151,44 @@ function toRemotePayload(entry: ProcedureEntry): ProcedureEntryRemotePayload {
   }
 }
 
-async function enqueueSyncJob(entry: ProcedureEntry, operation: SyncOperation) {
-  const now = new Date().toISOString()
+export function getSyncOperationForEntry(entry: ProcedureEntry): SyncOperation {
+  return entry.deletedAt ? 'delete' : 'upsert'
+}
 
+export function buildSyncJobForEntry(
+  entry: ProcedureEntry,
+  operation = getSyncOperationForEntry(entry),
+  options?: Partial<Pick<SyncJob, 'createdAt' | 'updatedAt' | 'attempts' | 'lastError'>>,
+): SyncJob {
+  const now = options?.updatedAt ?? new Date().toISOString()
+
+  return {
+    id: crypto.randomUUID(),
+    entryId: entry.id,
+    operation,
+    payload: toRemotePayload(entry),
+    createdAt: options?.createdAt ?? now,
+    updatedAt: now,
+    attempts: options?.attempts ?? 0,
+    lastError: options?.lastError ?? null,
+  }
+}
+
+export async function replaceSyncJob(
+  entry: ProcedureEntry,
+  operation = getSyncOperationForEntry(entry),
+  options?: Partial<Pick<SyncJob, 'createdAt' | 'updatedAt' | 'attempts' | 'lastError'>>,
+) {
   const previousJobs = await db.syncQueue.where('entryId').equals(entry.id).toArray()
 
   if (previousJobs.length > 0) {
     await db.syncQueue.bulkDelete(previousJobs.map((job) => job.id))
   }
 
-  const job: SyncJob = {
-    id: crypto.randomUUID(),
-    entryId: entry.id,
-    operation,
-    payload: toRemotePayload(entry),
-    createdAt: now,
-    updatedAt: now,
-    attempts: 0,
-    lastError: null,
-  }
+  const job = buildSyncJobForEntry(entry, operation, options)
 
   await db.syncQueue.put(job)
+  return job
 }
 
 function sortEntries(left: ProcedureEntry, right: ProcedureEntry) {
@@ -261,7 +278,7 @@ export async function saveEntry(input: ProcedureEntryDraft) {
 
   await db.transaction('rw', db.entries, db.syncQueue, async () => {
     await db.entries.put(nextEntry)
-    await enqueueSyncJob(nextEntry, 'upsert')
+    await replaceSyncJob(nextEntry, 'upsert')
   })
 
   return nextEntry
@@ -286,7 +303,7 @@ export async function deleteEntry(entryId: string) {
 
   await db.transaction('rw', db.entries, db.syncQueue, async () => {
     await db.entries.put(deletedEntry)
-    await enqueueSyncJob(deletedEntry, 'delete')
+    await replaceSyncJob(deletedEntry, 'delete')
   })
 
   return true

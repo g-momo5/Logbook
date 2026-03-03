@@ -154,6 +154,17 @@ export type ProcedureEntryRemotePayload =
       CoronarografiaAngioplasticaDetails
     >
 
+export type ProcedureEntryRemoteRow =
+  | Omit<ProcedureEntryRemotePayloadBase<'coronarografia', CoronarografiaDetails>, 'user_id'> & {
+      user_id: string
+    }
+  | Omit<
+      ProcedureEntryRemotePayloadBase<'coronarografia_angioplastica', CoronarografiaAngioplasticaDetails>,
+      'user_id'
+    > & {
+      user_id: string
+    }
+
 export interface SyncJob {
   id: string
   entryId: string
@@ -202,6 +213,10 @@ export interface StatsResult {
 }
 
 export interface SyncReport {
+  uploaded: number
+  downloaded: number
+  merged: number
+  keptLocal: number
   processed: number
   skipped: boolean
   errors: string[]

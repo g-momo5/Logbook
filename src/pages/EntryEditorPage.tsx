@@ -15,7 +15,7 @@ import {
 } from '../lib/clinical'
 import { todayDateValue } from '../lib/format'
 import { deleteEntry, getProcedureEntry, saveEntry } from '../lib/logbook'
-import { syncPending } from '../lib/sync'
+import { formatSyncSuccessMessage, syncPending } from '../lib/sync'
 import { refreshAppSnapshot, useAppStore } from '../store/app-store'
 import type {
   AccessSite,
@@ -310,10 +310,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
       return
     }
 
-    setSyncState(
-      'idle',
-      report.processed > 0 ? `Sincronizzati ${report.processed} record.` : 'Nessun record da inviare.',
-    )
+    setSyncState('idle', formatSyncSuccessMessage(report))
   }
 
   async function handleSave() {

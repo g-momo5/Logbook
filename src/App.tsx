@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useEffectEvent } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import AppShell from './components/AppShell'
-import { syncPending } from './lib/sync'
+import { formatSyncSuccessMessage, syncPending } from './lib/sync'
 import { refreshAppSnapshot, useAppStore } from './store/app-store'
 
 const EntryEditorPage = lazy(() => import('./pages/EntryEditorPage'))
@@ -47,12 +47,7 @@ function App() {
       return
     }
 
-    if (report.processed > 0) {
-      setSyncState('idle', `Sincronizzati ${report.processed} record.`)
-      return
-    }
-
-    setSyncState('idle', 'Nessun record in coda.')
+    setSyncState('idle', formatSyncSuccessMessage(report))
   })
 
   useEffect(() => {
