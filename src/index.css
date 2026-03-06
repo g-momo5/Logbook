@@ -64,6 +64,33 @@ button {
   cursor: pointer;
 }
 
+.entry-date-input {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.entry-date-input::-webkit-date-and-time-value {
+  min-width: 0;
+  text-align: left;
+}
+
+.entry-date-input::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.entry-date-input::-webkit-datetime-edit-fields-wrapper {
+  min-width: 0;
+}
+
+.entry-date-input::-webkit-datetime-edit-day-field,
+.entry-date-input::-webkit-datetime-edit-month-field,
+.entry-date-input::-webkit-datetime-edit-year-field {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
 ::selection {
   background: rgba(21, 127, 115, 0.18);
 }

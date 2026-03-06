@@ -499,7 +499,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
             type="date"
             value={form.procedureDate}
             onChange={(event) => setField('procedureDate', event.target.value)}
-            className="w-full rounded-3xl border border-slate-900/5 bg-white px-4 py-4 text-base text-slate-950 outline-none"
+            className="entry-date-input w-full min-w-0 max-w-full overflow-hidden rounded-3xl border border-slate-900/5 bg-white px-4 py-4 text-base text-slate-950 outline-none"
           />
         </label>
 
