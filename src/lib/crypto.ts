@@ -8,6 +8,40 @@ function bytesToHex(bytes: Uint8Array) {
     .join('')
 }
 
+function bytesToUuid(bytes: Uint8Array) {
+  const hex = bytesToHex(bytes)
+
+  return [
+    hex.slice(0, 8),
+    hex.slice(8, 12),
+    hex.slice(12, 16),
+    hex.slice(16, 20),
+    hex.slice(20, 32),
+  ].join('-')
+}
+
+export function generateUuid() {
+  const webCrypto = globalThis.crypto
+
+  if (typeof webCrypto?.randomUUID === 'function') {
+    return webCrypto.randomUUID()
+  }
+
+  if (typeof webCrypto?.getRandomValues === 'function') {
+    const bytes = webCrypto.getRandomValues(new Uint8Array(16))
+    bytes[6] = (bytes[6] & 0x0f) | 0x40
+    bytes[8] = (bytes[8] & 0x3f) | 0x80
+
+    return bytesToUuid(bytes)
+  }
+
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+    const random = Math.floor(Math.random() * 16)
+    const value = char === 'x' ? random : (random & 0x3) | 0x8
+    return value.toString(16)
+  })
+}
+
 async function hashValue(value: string) {
   const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))
   return bytesToHex(new Uint8Array(buffer))

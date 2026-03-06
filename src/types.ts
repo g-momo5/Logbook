@@ -197,10 +197,29 @@ export interface StatsDatum {
   count: number
 }
 
+export type StatsMetric =
+  | 'byType'
+  | 'byTypeAndRole'
+  | 'byAccessSite'
+  | 'byCannulation'
+  | 'byHemostasis'
+  | 'byAngioplastyTechnique'
+  | 'byTreatment'
+  | 'byImaging'
+  | 'byDebulking'
+  | 'byTreatedVessel'
+  | 'byTreatedSegment'
+
 export interface StatsQuery {
   range: StatsRange
   from?: string
   to?: string
+}
+
+export interface StatsDrilldown {
+  metric: StatsMetric
+  label: string
+  range: StatsRange
 }
 
 export interface StatsResult {

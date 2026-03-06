@@ -60,7 +60,7 @@ function resolveRangeBounds(query: StatsQuery) {
   return { from, to }
 }
 
-function isEntryInRange(entry: ProcedureEntry, query: StatsQuery) {
+export function isEntryInRange(entry: ProcedureEntry, query: StatsQuery) {
   const { from, to } = resolveRangeBounds(query)
 
   if (from && entry.procedureDate < from) {

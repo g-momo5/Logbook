@@ -14,6 +14,7 @@ import {
   treatmentOptions,
   vesselSegmentOptions,
 } from '../lib/clinical'
+import { generateUuid } from '../lib/crypto'
 import { todayDateValue } from '../lib/format'
 import { deleteEntry, getProcedureEntry, saveEntry } from '../lib/logbook'
 import { formatSyncSuccessMessage, syncPending } from '../lib/sync'
@@ -81,7 +82,7 @@ function createInitialFormState(): FormState {
 
 function createTreatedSegmentRow(input?: TreatedSegment): TreatedSegmentRow {
   return {
-    id: crypto.randomUUID(),
+    id: generateUuid(),
     vessel: input?.vessel ?? '',
     segment: input?.segment ?? '',
   }

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { buildCardSummary, getEntryAccessSite, getProcedureLabel } from './clinical'
+import { generateUuid } from './crypto'
 import { db, ensureBootstrapped } from './db'
 import type {
   ProcedureEntry,
@@ -167,7 +168,7 @@ export function buildSyncJobForEntry(
   const now = options?.updatedAt ?? new Date().toISOString()
 
   return {
-    id: crypto.randomUUID(),
+    id: generateUuid(),
     entryId: entry.id,
     operation,
     payload: toRemotePayload(entry),
@@ -240,7 +241,7 @@ export async function saveEntry(input: ProcedureEntryDraft) {
   const now = new Date().toISOString()
 
   const baseEntry = {
-    id: existingEntry?.id ?? crypto.randomUUID(),
+    id: existingEntry?.id ?? generateUuid(),
     userId: existingEntry?.userId ?? null,
     procedureLabel: getProcedureLabel(parsedInput.procedureKind),
     procedureDate: parsedInput.procedureDate,

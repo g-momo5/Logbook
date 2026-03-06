@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 
+import { buildStatsDrilldownSearchParams } from '../lib/stats-drilldown'
 import { getStats, getTopLabel } from '../lib/stats'
-import type { StatsDatum, StatsRange, StatsResult } from '../types'
+import type { StatsDatum, StatsMetric, StatsRange, StatsResult } from '../types'
 
 const emptyStats: StatsResult = {
   totalEntries: 0,
@@ -28,9 +30,13 @@ const rangeOptions: Array<{ value: StatsRange; label: string }> = [
 
 function StatList({
   title,
+  metric,
+  range,
   items,
 }: {
   title: string
+  metric: StatsMetric
+  range: StatsRange
   items: StatsDatum[]
 }) {
   return (
@@ -41,12 +47,20 @@ function StatList({
           <div className="rounded-3xl bg-slate-900/5 p-4 text-sm text-slate-600">Nessun dato.</div>
         ) : (
           items.map((item) => (
-            <div key={item.label} className="rounded-3xl bg-slate-900/5 p-4">
+            <Link
+              key={item.label}
+              to={`/logbook?${buildStatsDrilldownSearchParams({
+                metric,
+                label: item.label,
+                range,
+              })}`}
+              className="block rounded-3xl bg-slate-900/5 p-4 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-lg hover:shadow-slate-900/5"
+            >
               <div className="flex items-center justify-between gap-3 text-sm font-medium text-slate-700">
                 <span>{item.label}</span>
                 <span>{item.count}</span>
               </div>
-            </div>
+            </Link>
           ))
         )}
       </div>
@@ -124,17 +138,42 @@ function StatsPage() {
       </section>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <StatList title="Per tipo procedura" items={stats.byType} />
-        <StatList title="Per procedura + ruolo" items={stats.byTypeAndRole} />
-        <StatList title="Per accesso" items={stats.byAccessSite} />
-        <StatList title="Per incannulazione" items={stats.byCannulation} />
-        <StatList title="Per emostasi" items={stats.byHemostasis} />
-        <StatList title="Tecniche angioplastica" items={stats.byAngioplastyTechnique} />
-        <StatList title="Trattamenti" items={stats.byTreatment} />
-        <StatList title="Imaging" items={stats.byImaging} />
-        <StatList title="Debulking" items={stats.byDebulking} />
-        <StatList title="Vasi trattati" items={stats.byTreatedVessel} />
-        <StatList title="Per vaso + tratto" items={stats.byTreatedSegment} />
+        <StatList title="Per tipo procedura" metric="byType" range={range} items={stats.byType} />
+        <StatList
+          title="Per procedura + ruolo"
+          metric="byTypeAndRole"
+          range={range}
+          items={stats.byTypeAndRole}
+        />
+        <StatList title="Per accesso" metric="byAccessSite" range={range} items={stats.byAccessSite} />
+        <StatList
+          title="Per incannulazione"
+          metric="byCannulation"
+          range={range}
+          items={stats.byCannulation}
+        />
+        <StatList title="Per emostasi" metric="byHemostasis" range={range} items={stats.byHemostasis} />
+        <StatList
+          title="Tecniche angioplastica"
+          metric="byAngioplastyTechnique"
+          range={range}
+          items={stats.byAngioplastyTechnique}
+        />
+        <StatList title="Trattamenti" metric="byTreatment" range={range} items={stats.byTreatment} />
+        <StatList title="Imaging" metric="byImaging" range={range} items={stats.byImaging} />
+        <StatList title="Debulking" metric="byDebulking" range={range} items={stats.byDebulking} />
+        <StatList
+          title="Vasi trattati"
+          metric="byTreatedVessel"
+          range={range}
+          items={stats.byTreatedVessel}
+        />
+        <StatList
+          title="Per vaso + tratto"
+          metric="byTreatedSegment"
+          range={range}
+          items={stats.byTreatedSegment}
+        />
       </div>
     </div>
   )

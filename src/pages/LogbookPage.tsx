@@ -1,12 +1,19 @@
-import { startTransition, useDeferredValue, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { startTransition, useDeferredValue, useEffect, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 
 import { getAccessSiteLabel, getOperatorRoleLabel, getProcedureLabel } from '../lib/clinical'
 import { formatProcedureDate } from '../lib/format'
 import { listProcedureEntries } from '../lib/logbook'
+import {
+  doesEntryMatchStatsDrilldown,
+  getStatsMetricLabel,
+  getStatsRangeLabel,
+  parseStatsDrilldown,
+} from '../lib/stats-drilldown'
 import type { ProcedureEntry, SupportedProcedureKind } from '../types'
 
 function LogbookPage() {
+  const [searchParams] = useSearchParams()
   const [entries, setEntries] = useState<ProcedureEntry[]>([])
   const [search, setSearch] = useState('')
   const [selectedKind, setSelectedKind] = useState<SupportedProcedureKind | ''>('')
@@ -14,6 +21,7 @@ function LogbookPage() {
   const [onlyPending, setOnlyPending] = useState(false)
 
   const deferredSearch = useDeferredValue(search)
+  const statsDrilldown = useMemo(() => parseStatsDrilldown(searchParams), [searchParams])
 
   useEffect(() => {
     let isActive = true
@@ -63,6 +71,10 @@ function LogbookPage() {
       return false
     }
 
+    if (statsDrilldown && !doesEntryMatchStatsDrilldown(entry, statsDrilldown)) {
+      return false
+    }
+
     return true
   })
 
@@ -83,6 +95,21 @@ function LogbookPage() {
             Nuova
           </Link>
         </div>
+
+        {statsDrilldown ? (
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-3xl bg-teal-700/10 px-4 py-3">
+            <p className="text-sm font-medium text-teal-900">
+              Filtro statistiche: {getStatsMetricLabel(statsDrilldown.metric)} · {statsDrilldown.label} ·{' '}
+              {getStatsRangeLabel(statsDrilldown.range)}
+            </p>
+            <Link
+              to="/logbook"
+              className="rounded-3xl bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-teal-900 ring-1 ring-teal-900/10"
+            >
+              Rimuovi filtro statistiche
+            </Link>
+          </div>
+        ) : null}
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <label className="block sm:col-span-2">
