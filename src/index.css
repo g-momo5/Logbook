@@ -64,14 +64,24 @@ button {
   cursor: pointer;
 }
 
+.entry-date-field {
+  overflow: hidden;
+}
+
 .entry-date-input {
+  display: block;
   min-width: 0;
   max-width: 100%;
-  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  line-height: 1.25;
 }
 
 .entry-date-input::-webkit-date-and-time-value {
   min-width: 0;
+  width: 100%;
   text-align: left;
 }
 
@@ -89,6 +99,10 @@ button {
   margin: 0;
   padding: 0;
   background: transparent;
+}
+
+.entry-date-input::-webkit-calendar-picker-indicator {
+  opacity: 0.8;
 }
 
 ::selection {

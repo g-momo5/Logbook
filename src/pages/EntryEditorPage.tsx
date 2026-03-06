@@ -495,12 +495,14 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
           <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
             Data
           </span>
-          <input
-            type="date"
-            value={form.procedureDate}
-            onChange={(event) => setField('procedureDate', event.target.value)}
-            className="entry-date-input w-full min-w-0 max-w-full overflow-hidden rounded-3xl border border-slate-900/5 bg-white px-4 py-4 text-base text-slate-950 outline-none"
-          />
+          <div className="entry-date-field rounded-3xl border border-slate-900/5 bg-white">
+            <input
+              type="date"
+              value={form.procedureDate}
+              onChange={(event) => setField('procedureDate', event.target.value)}
+              className="entry-date-input w-full bg-transparent px-4 py-4 text-base text-slate-950 outline-none"
+            />
+          </div>
         </label>
 
         <div>
