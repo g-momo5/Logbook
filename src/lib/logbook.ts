@@ -26,6 +26,7 @@ const angioplastyTechniqueValues = [
   'cutting_balloon',
   'scoring_balloon',
 ] as const
+const functionalTestValues = ['ffr', 'ifr', 'qfr', 'imr', 'cfr'] as const
 const treatmentValues = ['des', 'bms', 'dcb'] as const
 const imagingValues = ['ivus', 'oct'] as const
 const plaqueDebulkingValues = ['rotablator', 'shockwave', 'laser'] as const
@@ -38,6 +39,7 @@ const operatorRoleSchema = z.enum(operatorRoleValues)
 const accessSiteSchema = z.enum(accessSiteValues)
 const cannulationSchema = z.enum(cannulationValues)
 const angioplastyTechniqueSchema = z.enum(angioplastyTechniqueValues)
+const functionalTestSchema = z.enum(functionalTestValues)
 const treatmentSchema = z.enum(treatmentValues)
 const imagingSchema = z.enum(imagingValues)
 const plaqueDebulkingSchema = z.enum(plaqueDebulkingValues)
@@ -60,6 +62,10 @@ const uniqueCannulationsSchema = z
 const uniqueTechniqueSchema = z
   .array(angioplastyTechniqueSchema)
   .refine((values) => uniqueArray(values), 'Tecniche duplicate.')
+
+const uniqueFunctionalTestsSchema = z
+  .array(functionalTestSchema)
+  .refine((values) => uniqueArray(values), 'Test funzionali duplicati.')
 
 const uniqueTreatmentSchema = z
   .array(treatmentSchema)
@@ -97,6 +103,7 @@ const coronarografiaDraftSchema = z.object({
     accessSite: accessSiteSchema.nullable(),
     hemostasis: hemostasisSchema.nullable(),
     cannulations: uniqueCannulationsSchema,
+    functionalTests: uniqueFunctionalTestsSchema,
   }),
 })
 
@@ -107,6 +114,7 @@ const coronarografiaAngioplasticaDraftSchema = z.object({
     accessSite: accessSiteSchema.nullable(),
     hemostasis: hemostasisSchema.nullable(),
     cannulations: uniqueCannulationsSchema,
+    functionalTests: uniqueFunctionalTestsSchema,
     angioplastyTechniques: uniqueTechniqueSchema,
     treatments: uniqueTreatmentSchema,
     imaging: uniqueImagingSchema,
@@ -265,6 +273,7 @@ export async function saveEntry(input: ProcedureEntryDraft) {
             accessSite: parsedInput.details.accessSite,
             hemostasis: parsedInput.details.hemostasis,
             cannulations: parsedInput.details.cannulations,
+            functionalTests: parsedInput.details.functionalTests,
           },
         }
       : {
@@ -275,6 +284,7 @@ export async function saveEntry(input: ProcedureEntryDraft) {
             accessSite: parsedInput.details.accessSite,
             hemostasis: parsedInput.details.hemostasis,
             cannulations: parsedInput.details.cannulations,
+            functionalTests: parsedInput.details.functionalTests,
             angioplastyTechniques: parsedInput.details.angioplastyTechniques,
             treatments: parsedInput.details.treatments,
             imaging: parsedInput.details.imaging,

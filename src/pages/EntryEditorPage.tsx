@@ -5,6 +5,7 @@ import {
   accessSiteOptions,
   angioplastyTechniqueOptions,
   cannulationOptions,
+  functionalTestOptions,
   getProcedureLabel,
   hemostasisOptions,
   imagingOptions,
@@ -23,6 +24,7 @@ import type {
   AccessSite,
   AngioplastyTechnique,
   Cannulation,
+  FunctionalTest,
   HemostasisType,
   ImagingType,
   OperatorRole,
@@ -57,6 +59,7 @@ interface FormState {
   accessSite: AccessSite | ''
   hemostasis: HemostasisType | ''
   cannulations: Cannulation[]
+  functionalTests: FunctionalTest[]
   angioplastyTechniques: AngioplastyTechnique[]
   treatments: TreatmentType[]
   imaging: ImagingType[]
@@ -72,6 +75,7 @@ function createInitialFormState(): FormState {
     accessSite: '',
     hemostasis: '',
     cannulations: [],
+    functionalTests: [],
     angioplastyTechniques: [],
     treatments: [],
     imaging: [],
@@ -226,6 +230,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
         accessSite: entry.details.accessSite ?? '',
         hemostasis: entry.details.hemostasis ?? '',
         cannulations: entry.details.cannulations,
+        functionalTests: entry.details.functionalTests ?? [],
         angioplastyTechniques:
           entry.procedureKind === 'coronarografia_angioplastica'
             ? entry.details.angioplastyTechniques
@@ -266,7 +271,12 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
 
   function toggleSelection<T extends string>(field: keyof Pick<
     FormState,
-    'cannulations' | 'angioplastyTechniques' | 'treatments' | 'imaging' | 'plaqueDebulking'
+    | 'cannulations'
+    | 'functionalTests'
+    | 'angioplastyTechniques'
+    | 'treatments'
+    | 'imaging'
+    | 'plaqueDebulking'
   >, value: T) {
     setForm((current) => {
       const values = current[field] as T[]
@@ -380,6 +390,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
             accessSite: form.accessSite || null,
             hemostasis: form.hemostasis || null,
             cannulations: form.cannulations,
+            functionalTests: form.functionalTests,
           },
         })
       } else {
@@ -390,6 +401,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
             accessSite: form.accessSite || null,
             hemostasis: form.hemostasis || null,
             cannulations: form.cannulations,
+            functionalTests: form.functionalTests,
             angioplastyTechniques: form.angioplastyTechniques,
             treatments: form.treatments,
             imaging: form.imaging,
@@ -541,6 +553,17 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
             options={cannulationOptions}
             values={form.cannulations}
             onToggle={(value) => toggleSelection('cannulations', value as Cannulation)}
+          />
+        </div>
+
+        <div>
+          <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+            Test funzionali
+          </span>
+          <MultiSelectGrid
+            options={functionalTestOptions}
+            values={form.functionalTests}
+            onToggle={(value) => toggleSelection('functionalTests', value as FunctionalTest)}
           />
         </div>
 

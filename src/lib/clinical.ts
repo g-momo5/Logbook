@@ -2,6 +2,7 @@ import type {
   AccessSite,
   AngioplastyTechnique,
   Cannulation,
+  FunctionalTest,
   HemostasisType,
   ImagingType,
   OperatorRole,
@@ -107,6 +108,14 @@ export const angioplastyTechniqueOptions: Option<AngioplastyTechnique>[] = [
   { value: 'scoring_balloon', label: 'Scoring balloon' },
 ]
 
+export const functionalTestOptions: Option<FunctionalTest>[] = [
+  { value: 'ffr', label: 'FFR' },
+  { value: 'ifr', label: 'iFR' },
+  { value: 'qfr', label: 'QFR' },
+  { value: 'imr', label: 'IMR' },
+  { value: 'cfr', label: 'CFR' },
+]
+
 export const treatmentOptions: Option<TreatmentType>[] = [
   { value: 'des', label: 'DES' },
   { value: 'bms', label: 'BMS' },
@@ -176,6 +185,10 @@ export function getCannulationLabel(cannulation: Cannulation) {
 
 export function getAngioplastyTechniqueLabel(technique: AngioplastyTechnique) {
   return getLabel(angioplastyTechniqueOptions, technique) ?? technique
+}
+
+export function getFunctionalTestLabel(value: FunctionalTest) {
+  return getLabel(functionalTestOptions, value) ?? value
 }
 
 export function getTreatmentLabel(treatment: TreatmentType) {

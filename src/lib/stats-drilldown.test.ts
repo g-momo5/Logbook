@@ -28,6 +28,7 @@ const coronarografiaEntry: ProcedureEntry = {
     accessSite: 'radiale_destro',
     hemostasis: null,
     cannulations: ['coronaria_sinistra'],
+    functionalTests: ['qfr'],
   },
   createdAt: '2026-03-03T10:00:00.000Z',
   updatedAt: '2026-03-03T10:00:00.000Z',
@@ -50,6 +51,7 @@ const angioplasticaEntry: ProcedureEntry = {
     accessSite: 'femorale',
     hemostasis: 'tr_band',
     cannulations: ['coronaria_destra'],
+    functionalTests: ['ifr'],
     angioplastyTechniques: ['cutting_balloon'],
     treatments: ['des'],
     imaging: ['ivus'],
@@ -138,6 +140,12 @@ describe('stats drill-down helpers', () => {
         label: 'Coronaria sinistra',
         expectedMatch: coronarografiaEntry,
         expectedNoMatch: angioplasticaEntry,
+      },
+      {
+        metric: 'byFunctionalTest',
+        label: 'iFR',
+        expectedMatch: angioplasticaEntry,
+        expectedNoMatch: coronarografiaEntry,
       },
       {
         metric: 'byHemostasis',

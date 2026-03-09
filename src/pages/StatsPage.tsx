@@ -12,6 +12,7 @@ const emptyStats: StatsResult = {
   byTypeAndRole: [],
   byAccessSite: [],
   byCannulation: [],
+  byFunctionalTest: [],
   byHemostasis: [],
   byAngioplastyTechnique: [],
   byTreatment: [],
@@ -151,6 +152,12 @@ function StatsPage() {
           metric="byCannulation"
           range={range}
           items={stats.byCannulation}
+        />
+        <StatList
+          title="Test funzionali"
+          metric="byFunctionalTest"
+          range={range}
+          items={stats.byFunctionalTest}
         />
         <StatList title="Per emostasi" metric="byHemostasis" range={range} items={stats.byHemostasis} />
         <StatList

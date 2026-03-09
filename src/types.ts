@@ -37,6 +37,8 @@ export type AngioplastyTechnique =
   | 'cutting_balloon'
   | 'scoring_balloon'
 
+export type FunctionalTest = 'ffr' | 'ifr' | 'qfr' | 'imr' | 'cfr'
+
 export type TreatmentType = 'des' | 'bms' | 'dcb'
 
 export type ImagingType = 'ivus' | 'oct'
@@ -68,6 +70,7 @@ export interface CoronarografiaDetails {
   accessSite: AccessSite | null
   hemostasis: HemostasisType | null
   cannulations: Cannulation[]
+  functionalTests: FunctionalTest[]
 }
 
 export interface CoronarografiaAngioplasticaDetails {
@@ -75,6 +78,7 @@ export interface CoronarografiaAngioplasticaDetails {
   accessSite: AccessSite | null
   hemostasis: HemostasisType | null
   cannulations: Cannulation[]
+  functionalTests: FunctionalTest[]
   angioplastyTechniques: AngioplastyTechnique[]
   treatments: TreatmentType[]
   imaging: ImagingType[]
@@ -202,6 +206,7 @@ export type StatsMetric =
   | 'byTypeAndRole'
   | 'byAccessSite'
   | 'byCannulation'
+  | 'byFunctionalTest'
   | 'byHemostasis'
   | 'byAngioplastyTechnique'
   | 'byTreatment'
@@ -229,6 +234,7 @@ export interface StatsResult {
   byTypeAndRole: StatsDatum[]
   byAccessSite: StatsDatum[]
   byCannulation: StatsDatum[]
+  byFunctionalTest: StatsDatum[]
   byHemostasis: StatsDatum[]
   byAngioplastyTechnique: StatsDatum[]
   byTreatment: StatsDatum[]

@@ -2,6 +2,7 @@ import {
   getAccessSiteLabel,
   getAngioplastyTechniqueLabel,
   getCannulationLabel,
+  getFunctionalTestLabel,
   getHemostasisLabel,
   getImagingLabel,
   getOperatorRoleLabel,
@@ -19,6 +20,7 @@ export const statsMetrics: StatsMetric[] = [
   'byTypeAndRole',
   'byAccessSite',
   'byCannulation',
+  'byFunctionalTest',
   'byHemostasis',
   'byAngioplastyTechnique',
   'byTreatment',
@@ -36,6 +38,7 @@ const statsMetricLabels: Record<StatsMetric, string> = {
   byTypeAndRole: 'Per procedura + ruolo',
   byAccessSite: 'Per accesso',
   byCannulation: 'Per incannulazione',
+  byFunctionalTest: 'Test funzionali',
   byHemostasis: 'Per emostasi',
   byAngioplastyTechnique: 'Tecniche angioplastica',
   byTreatment: 'Trattamenti',
@@ -111,6 +114,10 @@ export function doesEntryMatchStatsMetric(entry: ProcedureEntry, metric: StatsMe
 
   if (metric === 'byCannulation') {
     return entry.details.cannulations.some((item) => getCannulationLabel(item) === label)
+  }
+
+  if (metric === 'byFunctionalTest') {
+    return (entry.details.functionalTests ?? []).some((item) => getFunctionalTestLabel(item) === label)
   }
 
   if (metric === 'byHemostasis') {

@@ -16,6 +16,7 @@ const emptyStats: StatsResult = {
   byTypeAndRole: [],
   byAccessSite: [],
   byCannulation: [],
+  byFunctionalTest: [],
   byHemostasis: [],
   byAngioplastyTechnique: [],
   byTreatment: [],

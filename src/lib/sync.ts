@@ -320,6 +320,9 @@ function toLocalEntry(row: ProcedureEntryRemoteRow): ProcedureEntry {
         accessSite,
         hemostasis,
         cannulations: asStringArray(rawDetails.cannulations) as CoronarografiaDetails['cannulations'],
+        functionalTests: asStringArray(
+          rawDetails.functionalTests,
+        ) as CoronarografiaDetails['functionalTests'],
       },
       createdAt: row.created_at,
       updatedAt: row.updated_at,
@@ -360,6 +363,9 @@ function toLocalEntry(row: ProcedureEntryRemoteRow): ProcedureEntry {
         accessSite,
         hemostasis,
         cannulations: asStringArray(rawDetails.cannulations) as CoronarografiaAngioplasticaDetails['cannulations'],
+        functionalTests: asStringArray(
+          rawDetails.functionalTests,
+        ) as CoronarografiaAngioplasticaDetails['functionalTests'],
         angioplastyTechniques: asStringArray(
           rawDetails.angioplastyTechniques,
         ) as CoronarografiaAngioplasticaDetails['angioplastyTechniques'],

@@ -18,6 +18,7 @@ const baseEntries: ProcedureEntry[] = [
       accessSite: 'radiale_destro',
       hemostasis: null,
       cannulations: ['coronaria_sinistra'],
+      functionalTests: ['ffr'],
     },
     createdAt: '2026-03-03T10:00:00.000Z',
     updatedAt: '2026-03-03T10:00:00.000Z',
@@ -39,6 +40,7 @@ const baseEntries: ProcedureEntry[] = [
       accessSite: 'femorale',
       hemostasis: 'tr_band',
       cannulations: ['coronaria_destra'],
+      functionalTests: ['ffr', 'imr'],
       angioplastyTechniques: ['cutting_balloon', 'scoring_balloon'],
       treatments: ['des'],
       imaging: ['ivus'],
@@ -74,6 +76,10 @@ describe('stats helpers', () => {
     expect(stats.byCannulation).toEqual([
       { label: 'Coronaria destra', count: 1 },
       { label: 'Coronaria sinistra', count: 1 },
+    ])
+    expect(stats.byFunctionalTest).toEqual([
+      { label: 'FFR', count: 2 },
+      { label: 'IMR', count: 1 },
     ])
     expect(stats.byHemostasis).toEqual([{ label: 'TR Band', count: 1 }])
     expect(stats.byAngioplastyTechnique).toEqual([

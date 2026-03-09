@@ -2,6 +2,7 @@ import {
   getAccessSiteLabel,
   getAngioplastyTechniqueLabel,
   getCannulationLabel,
+  getFunctionalTestLabel,
   getHemostasisLabel,
   getImagingLabel,
   getOperatorRoleLabel,
@@ -113,6 +114,11 @@ export function getStatsFromEntries(entries: ProcedureEntry[], query: StatsQuery
   const byCannulation = mapCountByLabel(
     activeEntries.flatMap((entry) => entry.details.cannulations.map((item) => getCannulationLabel(item))),
   )
+  const byFunctionalTest = mapCountByLabel(
+    activeEntries.flatMap((entry) =>
+      (entry.details.functionalTests ?? []).map((item) => getFunctionalTestLabel(item)),
+    ),
+  )
   const byHemostasis = mapCountByLabel(
     activeEntries
       .map((entry) => getHemostasisLabel(entry.details.hemostasis))
@@ -170,6 +176,7 @@ export function getStatsFromEntries(entries: ProcedureEntry[], query: StatsQuery
     byTypeAndRole,
     byAccessSite,
     byCannulation,
+    byFunctionalTest,
     byHemostasis,
     byAngioplastyTechnique,
     byTreatment,
