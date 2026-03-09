@@ -123,7 +123,13 @@ async function getSyncBlockReason(): Promise<SyncBlockReason | null> {
     return 'not-configured'
   }
 
-  const session = await getSupabaseSession()
+  let session = null
+
+  try {
+    session = await getSupabaseSession()
+  } catch {
+    return 'offline'
+  }
 
   if (!session) {
     return 'unauthenticated'
@@ -513,7 +519,22 @@ async function runSyncPending(): Promise<SyncReport> {
     }
   }
 
-  const session = await getSupabaseSession()
+  let session = null
+
+  try {
+    session = await getSupabaseSession()
+  } catch {
+    return {
+      uploaded: 0,
+      downloaded: 0,
+      merged: 0,
+      keptLocal: 0,
+      processed: 0,
+      skipped: true,
+      errors: [],
+      reason: 'offline',
+    }
+  }
 
   if (!session) {
     return {
