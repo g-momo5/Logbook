@@ -4,6 +4,7 @@ import { hasSupabaseConfig } from './env'
 import { getSyncOperationForEntry, replaceSyncJob } from './logbook'
 import { getSupabaseClient, getSupabaseSession } from './supabase'
 import type {
+  CateterismoDestroDetails,
   CoronarografiaAngioplasticaDetails,
   CoronarografiaDetails,
   ProcedureEntry,
@@ -306,7 +307,7 @@ function toLocalEntry(row: ProcedureEntryRemoteRow): ProcedureEntry {
   const rawDetails = asObject(row.details)
   const accessSite = ((typeof rawDetails.accessSite === 'string'
     ? rawDetails.accessSite
-    : row.access_site) ?? null) as CoronarografiaDetails['accessSite']
+    : row.access_site) ?? null) as ProcedureEntry['details']['accessSite']
   const hemostasis = (
     typeof rawDetails.hemostasis === 'string' ? rawDetails.hemostasis : null
   ) as CoronarografiaDetails['hemostasis']
@@ -323,12 +324,34 @@ function toLocalEntry(row: ProcedureEntryRemoteRow): ProcedureEntry {
       cardSummary: row.card_summary,
       details: {
         kind: 'coronarografia',
-        accessSite,
+        accessSite: accessSite as CoronarografiaDetails['accessSite'],
         hemostasis,
         cannulations: asStringArray(rawDetails.cannulations) as CoronarografiaDetails['cannulations'],
         functionalTests: asStringArray(
           rawDetails.functionalTests,
         ) as CoronarografiaDetails['functionalTests'],
+      },
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+      deletedAt: row.deleted_at,
+      syncStatus: 'synced',
+      syncError: null,
+    }
+  }
+
+  if (row.procedure_kind === 'cateterismo_destro') {
+    return {
+      id: row.id,
+      userId: row.user_id,
+      procedureKind: 'cateterismo_destro',
+      procedureLabel: row.procedure_label,
+      procedureDate: row.procedure_date,
+      operatorRole: row.operator_role,
+      notes: row.notes,
+      cardSummary: row.card_summary,
+      details: {
+        kind: 'cateterismo_destro',
+        accessSite: accessSite as CateterismoDestroDetails['accessSite'],
       },
       createdAt: row.created_at,
       updatedAt: row.updated_at,
@@ -366,7 +389,7 @@ function toLocalEntry(row: ProcedureEntryRemoteRow): ProcedureEntry {
     cardSummary: row.card_summary,
       details: {
         kind: 'coronarografia_angioplastica',
-        accessSite,
+        accessSite: accessSite as CoronarografiaAngioplasticaDetails['accessSite'],
         hemostasis,
         cannulations: asStringArray(rawDetails.cannulations) as CoronarografiaAngioplasticaDetails['cannulations'],
         functionalTests: asStringArray(

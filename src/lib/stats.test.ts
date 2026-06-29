@@ -17,7 +17,7 @@ const baseEntries: ProcedureEntry[] = [
       kind: 'coronarografia',
       accessSite: 'radiale_destro',
       hemostasis: null,
-      cannulations: ['coronaria_sinistra'],
+      cannulations: ['coronaria_sinistra', 'ventricolografia'],
       functionalTests: ['ffr'],
     },
     createdAt: '2026-03-03T10:00:00.000Z',
@@ -39,7 +39,7 @@ const baseEntries: ProcedureEntry[] = [
       kind: 'coronarografia_angioplastica',
       accessSite: 'femorale',
       hemostasis: 'tr_band',
-      cannulations: ['coronaria_destra'],
+      cannulations: ['coronaria_destra', 'ventricolografia'],
       functionalTests: ['ffr', 'imr'],
       angioplastyTechniques: ['cutting_balloon', 'scoring_balloon'],
       treatments: ['des'],
@@ -56,24 +56,50 @@ const baseEntries: ProcedureEntry[] = [
     syncStatus: 'pending',
     syncError: null,
   },
+  {
+    id: '2d8fa4a5-a8be-4f94-a871-63a6c0d45b85',
+    userId: null,
+    procedureKind: 'cateterismo_destro',
+    procedureLabel: 'Cateterismo Destro',
+    procedureDate: '2026-03-03',
+    operatorRole: 'first_operator',
+    notes: '',
+    cardSummary: 'Primo operatore',
+    details: {
+      kind: 'cateterismo_destro',
+      accessSite: 'vena_giugulare_interna',
+    },
+    createdAt: '2026-03-03T12:00:00.000Z',
+    updatedAt: '2026-03-03T12:00:00.000Z',
+    deletedAt: null,
+    syncStatus: 'synced',
+    syncError: null,
+  },
 ]
 
 describe('stats helpers', () => {
   it('aggregates clinical metrics', () => {
     const stats = getStatsFromEntries(baseEntries, { range: 'all' })
 
-    expect(stats.totalEntries).toBe(2)
+    expect(stats.totalEntries).toBe(3)
     expect(stats.pendingSync).toBe(1)
-    expect(stats.byType[0].count).toBe(1)
+    expect(stats.byType).toEqual([
+      { label: 'Cateterismo Destro', count: 1 },
+      { label: 'Coronarografia', count: 1 },
+      { label: 'Coronarografia + Angioplastica', count: 1 },
+    ])
     expect(stats.byTypeAndRole).toEqual([
+      { label: 'Cateterismo Destro · Primo operatore', count: 1 },
       { label: 'Coronarografia · Primo operatore', count: 1 },
       { label: 'Coronarografia + Angioplastica · Secondo operatore', count: 1 },
     ])
     expect(stats.byAccessSite).toEqual([
       { label: 'Femorale', count: 1 },
       { label: 'Radiale destro', count: 1 },
+      { label: 'Vena giugulare interna', count: 1 },
     ])
     expect(stats.byCannulation).toEqual([
+      { label: 'Ventricolografia', count: 2 },
       { label: 'Coronaria destra', count: 1 },
       { label: 'Coronaria sinistra', count: 1 },
     ])

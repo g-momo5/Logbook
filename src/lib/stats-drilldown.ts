@@ -113,15 +113,21 @@ export function doesEntryMatchStatsMetric(entry: ProcedureEntry, metric: StatsMe
   }
 
   if (metric === 'byCannulation') {
-    return entry.details.cannulations.some((item) => getCannulationLabel(item) === label)
+    return (
+      entry.procedureKind !== 'cateterismo_destro' &&
+      entry.details.cannulations.some((item) => getCannulationLabel(item) === label)
+    )
   }
 
   if (metric === 'byFunctionalTest') {
-    return (entry.details.functionalTests ?? []).some((item) => getFunctionalTestLabel(item) === label)
+    return (
+      entry.procedureKind !== 'cateterismo_destro' &&
+      (entry.details.functionalTests ?? []).some((item) => getFunctionalTestLabel(item) === label)
+    )
   }
 
   if (metric === 'byHemostasis') {
-    return getHemostasisLabel(entry.details.hemostasis) === label
+    return entry.procedureKind !== 'cateterismo_destro' && getHemostasisLabel(entry.details.hemostasis) === label
   }
 
   if (metric === 'byAngioplastyTechnique') {

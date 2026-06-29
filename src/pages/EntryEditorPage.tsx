@@ -12,6 +12,7 @@ import {
   operatorRoleOptions,
   pciVesselOptions,
   plaqueDebulkingOptions,
+  rightHeartCathAccessSiteOptions,
   treatmentOptions,
   vesselSegmentOptions,
 } from '../lib/clinical'
@@ -30,6 +31,7 @@ import type {
   OperatorRole,
   PciVessel,
   PlaqueDebulkingType,
+  RightHeartCathAccessSite,
   SupportedProcedureKind,
   TreatmentType,
   TreatedSegment,
@@ -228,9 +230,9 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
         operatorRole: entry.operatorRole,
         notes: entry.notes,
         accessSite: entry.details.accessSite ?? '',
-        hemostasis: entry.details.hemostasis ?? '',
-        cannulations: entry.details.cannulations,
-        functionalTests: entry.details.functionalTests ?? [],
+        hemostasis: entry.procedureKind === 'cateterismo_destro' ? '' : entry.details.hemostasis ?? '',
+        cannulations: entry.procedureKind === 'cateterismo_destro' ? [] : entry.details.cannulations,
+        functionalTests: entry.procedureKind === 'cateterismo_destro' ? [] : entry.details.functionalTests ?? [],
         angioplastyTechniques:
           entry.procedureKind === 'coronarografia_angioplastica'
             ? entry.details.angioplastyTechniques
@@ -393,6 +395,14 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
             functionalTests: form.functionalTests,
           },
         })
+      } else if (resolvedKind === 'cateterismo_destro') {
+        await saveEntry({
+          ...commonDraft,
+          procedureKind: 'cateterismo_destro',
+          details: {
+            accessSite: (form.accessSite as RightHeartCathAccessSite | '') || null,
+          },
+        })
       } else {
         await saveEntry({
           ...commonDraft,
@@ -481,6 +491,10 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
   }
 
   const procedureLabel = getProcedureLabel(resolvedKind)
+  const isCoronaryProcedure =
+    resolvedKind === 'coronarografia' || resolvedKind === 'coronarografia_angioplastica'
+  const currentAccessSiteOptions =
+    resolvedKind === 'cateterismo_destro' ? rightHeartCathAccessSiteOptions : accessSiteOptions
 
   return (
     <div className="space-y-5">
@@ -538,34 +552,38 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
             Accesso
           </span>
           <ChoiceGrid
-            options={accessSiteOptions}
+            options={currentAccessSiteOptions}
             value={form.accessSite}
             onChange={(value) => handleAccessSiteChange(value as AccessSite | '')}
             allowClear
           />
         </div>
 
-        <div>
-          <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Incannulazione
-          </span>
-          <MultiSelectGrid
-            options={cannulationOptions}
-            values={form.cannulations}
-            onToggle={(value) => toggleSelection('cannulations', value as Cannulation)}
-          />
-        </div>
+        {isCoronaryProcedure ? (
+          <>
+            <div>
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Incannulazione
+              </span>
+              <MultiSelectGrid
+                options={cannulationOptions}
+                values={form.cannulations}
+                onToggle={(value) => toggleSelection('cannulations', value as Cannulation)}
+              />
+            </div>
 
-        <div>
-          <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Test funzionali
-          </span>
-          <MultiSelectGrid
-            options={functionalTestOptions}
-            values={form.functionalTests}
-            onToggle={(value) => toggleSelection('functionalTests', value as FunctionalTest)}
-          />
-        </div>
+            <div>
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Test funzionali
+              </span>
+              <MultiSelectGrid
+                options={functionalTestOptions}
+                values={form.functionalTests}
+                onToggle={(value) => toggleSelection('functionalTests', value as FunctionalTest)}
+              />
+            </div>
+          </>
+        ) : null}
 
         {resolvedKind === 'coronarografia_angioplastica' ? (
           <>
@@ -689,17 +707,19 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
           </>
         ) : null}
 
-        <div>
-          <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-            Emostasi
-          </span>
-          <ChoiceGrid
-            options={hemostasisOptions}
-            value={form.hemostasis}
-            onChange={(value) => setField('hemostasis', value as HemostasisType)}
-            allowClear
-          />
-        </div>
+        {isCoronaryProcedure ? (
+          <div>
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Emostasi
+            </span>
+            <ChoiceGrid
+              options={hemostasisOptions}
+              value={form.hemostasis}
+              onChange={(value) => setField('hemostasis', value as HemostasisType)}
+              allowClear
+            />
+          </div>
+        ) : null}
 
         <label className="block">
           <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">

@@ -18,12 +18,19 @@ export type ProcedureKind =
 
 export type SupportedProcedureKind = Extract<
   ProcedureKind,
-  'coronarografia' | 'coronarografia_angioplastica'
+  'coronarografia' | 'coronarografia_angioplastica' | 'cateterismo_destro'
 >
 
 export type OperatorRole = 'first_operator' | 'second_operator'
 
-export type AccessSite = 'radiale_destro' | 'radiale_sinistro' | 'femorale'
+export type CoronaryAccessSite = 'radiale_destro' | 'radiale_sinistro' | 'femorale'
+
+export type RightHeartCathAccessSite =
+  | 'vena_giugulare_interna'
+  | 'vena_succlavia'
+  | 'vena_femorale'
+
+export type AccessSite = CoronaryAccessSite | RightHeartCathAccessSite
 
 export type Cannulation =
   | 'coronaria_sinistra'
@@ -31,6 +38,7 @@ export type Cannulation =
   | 'mammaria_interna_sinistra'
   | 'mammaria_interna_destra'
   | 'free_graft_venoso'
+  | 'ventricolografia'
 
 export type AngioplastyTechnique =
   | 'pallone_semicompliante_nc'
@@ -86,7 +94,15 @@ export interface CoronarografiaAngioplasticaDetails {
   treatedSegments: TreatedSegment[]
 }
 
-export type ProcedureDetails = CoronarografiaDetails | CoronarografiaAngioplasticaDetails
+export interface CateterismoDestroDetails {
+  kind: 'cateterismo_destro'
+  accessSite: RightHeartCathAccessSite | null
+}
+
+export type ProcedureDetails =
+  | CoronarografiaDetails
+  | CoronarografiaAngioplasticaDetails
+  | CateterismoDestroDetails
 
 export interface ProcedureEntryBase<
   TKind extends SupportedProcedureKind,
@@ -115,7 +131,12 @@ export type CoronarografiaAngioplasticaEntry = ProcedureEntryBase<
   CoronarografiaAngioplasticaDetails
 >
 
-export type ProcedureEntry = CoronarografiaEntry | CoronarografiaAngioplasticaEntry
+export type CateterismoDestroEntry = ProcedureEntryBase<'cateterismo_destro', CateterismoDestroDetails>
+
+export type ProcedureEntry =
+  | CoronarografiaEntry
+  | CoronarografiaAngioplasticaEntry
+  | CateterismoDestroEntry
 
 interface ProcedureEntryDraftBase {
   id?: string
@@ -134,7 +155,15 @@ export interface CoronarografiaAngioplasticaDraft extends ProcedureEntryDraftBas
   details: Omit<CoronarografiaAngioplasticaDetails, 'kind'>
 }
 
-export type ProcedureEntryDraft = CoronarografiaDraft | CoronarografiaAngioplasticaDraft
+export interface CateterismoDestroDraft extends ProcedureEntryDraftBase {
+  procedureKind: 'cateterismo_destro'
+  details: Omit<CateterismoDestroDetails, 'kind'>
+}
+
+export type ProcedureEntryDraft =
+  | CoronarografiaDraft
+  | CoronarografiaAngioplasticaDraft
+  | CateterismoDestroDraft
 
 export interface ProcedureEntryRemotePayloadBase<
   TKind extends SupportedProcedureKind,
@@ -161,6 +190,7 @@ export type ProcedureEntryRemotePayload =
       'coronarografia_angioplastica',
       CoronarografiaAngioplasticaDetails
     >
+  | ProcedureEntryRemotePayloadBase<'cateterismo_destro', CateterismoDestroDetails>
 
 export type ProcedureEntryRemoteRow =
   | Omit<ProcedureEntryRemotePayloadBase<'coronarografia', CoronarografiaDetails>, 'user_id'> & {
@@ -170,6 +200,9 @@ export type ProcedureEntryRemoteRow =
       ProcedureEntryRemotePayloadBase<'coronarografia_angioplastica', CoronarografiaAngioplasticaDetails>,
       'user_id'
     > & {
+      user_id: string
+    }
+  | Omit<ProcedureEntryRemotePayloadBase<'cateterismo_destro', CateterismoDestroDetails>, 'user_id'> & {
       user_id: string
     }
 

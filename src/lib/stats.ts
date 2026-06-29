@@ -112,16 +112,26 @@ export function getStatsFromEntries(entries: ProcedureEntry[], query: StatsQuery
       .filter((value): value is string => Boolean(value)),
   )
   const byCannulation = mapCountByLabel(
-    activeEntries.flatMap((entry) => entry.details.cannulations.map((item) => getCannulationLabel(item))),
+    activeEntries.flatMap((entry) =>
+      entry.procedureKind === 'cateterismo_destro'
+        ? []
+        : entry.details.cannulations.map((item) => getCannulationLabel(item)),
+    ),
   )
   const byFunctionalTest = mapCountByLabel(
     activeEntries.flatMap((entry) =>
-      (entry.details.functionalTests ?? []).map((item) => getFunctionalTestLabel(item)),
+      entry.procedureKind === 'cateterismo_destro'
+        ? []
+        : (entry.details.functionalTests ?? []).map((item) => getFunctionalTestLabel(item)),
     ),
   )
   const byHemostasis = mapCountByLabel(
     activeEntries
-      .map((entry) => getHemostasisLabel(entry.details.hemostasis))
+      .map((entry) =>
+        entry.procedureKind === 'cateterismo_destro'
+          ? null
+          : getHemostasisLabel(entry.details.hemostasis),
+      )
       .filter((value): value is string => Boolean(value)),
   )
   const byAngioplastyTechnique = mapCountByLabel(

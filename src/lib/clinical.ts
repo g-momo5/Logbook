@@ -10,6 +10,7 @@ import type {
   PlaqueDebulkingType,
   ProcedureEntry,
   ProcedureKind,
+  RightHeartCathAccessSite,
   SupportedProcedureKind,
   TreatmentType,
   VesselSegment,
@@ -43,9 +44,10 @@ export const procedureCatalog: Array<{
   },
   {
     kind: 'cateterismo_destro',
-    label: 'Cateterisimo Destro',
-    description: 'Disponibile dopo la definizione del tracciato clinico.',
-    enabled: false,
+    label: 'Cateterismo Destro',
+    description: 'Procedura con ruolo e accesso venoso.',
+    enabled: true,
+    path: '/new/cateterismo-destro',
   },
   {
     kind: 'chiusura_pfo',
@@ -94,12 +96,19 @@ export const accessSiteOptions: Option<AccessSite>[] = [
   { value: 'femorale', label: 'Femorale' },
 ]
 
+export const rightHeartCathAccessSiteOptions: Option<RightHeartCathAccessSite>[] = [
+  { value: 'vena_giugulare_interna', label: 'Vena giugulare interna' },
+  { value: 'vena_succlavia', label: 'Vena succlavia' },
+  { value: 'vena_femorale', label: 'Vena femorale' },
+]
+
 export const cannulationOptions: Option<Cannulation>[] = [
   { value: 'coronaria_sinistra', label: 'Coronaria sinistra' },
   { value: 'coronaria_destra', label: 'Coronaria destra' },
   { value: 'mammaria_interna_sinistra', label: 'Mammaria interna sinistra' },
   { value: 'mammaria_interna_destra', label: 'Mammaria interna destra' },
   { value: 'free_graft_venoso', label: 'Free graft venoso' },
+  { value: 'ventricolografia', label: 'Ventricolografia' },
 ]
 
 export const angioplastyTechniqueOptions: Option<AngioplastyTechnique>[] = [
@@ -176,7 +185,15 @@ export function getOperatorRoleLabel(role: OperatorRole) {
 }
 
 export function getAccessSiteLabel(accessSite: AccessSite | null) {
-  return getLabel(accessSiteOptions, accessSite)
+  if (!accessSite) {
+    return null
+  }
+
+  return (
+    accessSiteOptions.find((option) => option.value === accessSite)?.label ??
+    rightHeartCathAccessSiteOptions.find((option) => option.value === accessSite)?.label ??
+    accessSite
+  )
 }
 
 export function getCannulationLabel(cannulation: Cannulation) {
@@ -224,5 +241,9 @@ export function getEntryAccessSite(entry: ProcedureEntry) {
 }
 
 export function isSupportedProcedureKind(value: string): value is SupportedProcedureKind {
-  return value === 'coronarografia' || value === 'coronarografia_angioplastica'
+  return (
+    value === 'coronarografia' ||
+    value === 'coronarografia_angioplastica' ||
+    value === 'cateterismo_destro'
+  )
 }

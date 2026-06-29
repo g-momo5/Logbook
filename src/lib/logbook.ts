@@ -13,13 +13,19 @@ import type {
 } from '../types'
 
 const operatorRoleValues = ['first_operator', 'second_operator'] as const
-const accessSiteValues = ['radiale_destro', 'radiale_sinistro', 'femorale'] as const
+const coronaryAccessSiteValues = ['radiale_destro', 'radiale_sinistro', 'femorale'] as const
+const rightHeartCathAccessSiteValues = [
+  'vena_giugulare_interna',
+  'vena_succlavia',
+  'vena_femorale',
+] as const
 const cannulationValues = [
   'coronaria_sinistra',
   'coronaria_destra',
   'mammaria_interna_sinistra',
   'mammaria_interna_destra',
   'free_graft_venoso',
+  'ventricolografia',
 ] as const
 const angioplastyTechniqueValues = [
   'pallone_semicompliante_nc',
@@ -36,7 +42,8 @@ const vesselSegmentValues = ['prossimale', 'medio', 'distale'] as const
 
 const procedureDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Data non valida.')
 const operatorRoleSchema = z.enum(operatorRoleValues)
-const accessSiteSchema = z.enum(accessSiteValues)
+const coronaryAccessSiteSchema = z.enum(coronaryAccessSiteValues)
+const rightHeartCathAccessSiteSchema = z.enum(rightHeartCathAccessSiteValues)
 const cannulationSchema = z.enum(cannulationValues)
 const angioplastyTechniqueSchema = z.enum(angioplastyTechniqueValues)
 const functionalTestSchema = z.enum(functionalTestValues)
@@ -100,7 +107,7 @@ const coronarografiaDraftSchema = z.object({
   ...commonDraftShape,
   procedureKind: z.literal('coronarografia'),
   details: z.object({
-    accessSite: accessSiteSchema.nullable(),
+    accessSite: coronaryAccessSiteSchema.nullable(),
     hemostasis: hemostasisSchema.nullable(),
     cannulations: uniqueCannulationsSchema,
     functionalTests: uniqueFunctionalTestsSchema,
@@ -111,7 +118,7 @@ const coronarografiaAngioplasticaDraftSchema = z.object({
   ...commonDraftShape,
   procedureKind: z.literal('coronarografia_angioplastica'),
   details: z.object({
-    accessSite: accessSiteSchema.nullable(),
+    accessSite: coronaryAccessSiteSchema.nullable(),
     hemostasis: hemostasisSchema.nullable(),
     cannulations: uniqueCannulationsSchema,
     functionalTests: uniqueFunctionalTestsSchema,
@@ -123,9 +130,18 @@ const coronarografiaAngioplasticaDraftSchema = z.object({
   }),
 })
 
+const cateterismoDestroDraftSchema = z.object({
+  ...commonDraftShape,
+  procedureKind: z.literal('cateterismo_destro'),
+  details: z.object({
+    accessSite: rightHeartCathAccessSiteSchema.nullable(),
+  }),
+})
+
 const entryDraftSchema = z.discriminatedUnion('procedureKind', [
   coronarografiaDraftSchema,
   coronarografiaAngioplasticaDraftSchema,
+  cateterismoDestroDraftSchema,
 ])
 
 export function toRemotePayload(entry: ProcedureEntry): ProcedureEntryRemotePayload {
@@ -134,6 +150,24 @@ export function toRemotePayload(entry: ProcedureEntry): ProcedureEntryRemotePayl
       id: entry.id,
       user_id: entry.userId,
       procedure_kind: 'coronarografia',
+      procedure_label: entry.procedureLabel,
+      procedure_date: entry.procedureDate,
+      operator_role: entry.operatorRole,
+      card_summary: entry.cardSummary,
+      access_site: getEntryAccessSite(entry),
+      details: entry.details,
+      notes: entry.notes,
+      created_at: entry.createdAt,
+      updated_at: entry.updatedAt,
+      deleted_at: entry.deletedAt,
+    }
+  }
+
+  if (entry.procedureKind === 'cateterismo_destro') {
+    return {
+      id: entry.id,
+      user_id: entry.userId,
+      procedure_kind: 'cateterismo_destro',
       procedure_label: entry.procedureLabel,
       procedure_date: entry.procedureDate,
       operator_role: entry.operatorRole,
@@ -219,6 +253,10 @@ export function getCreateRouteForProcedure(kind: SupportedProcedureKind) {
     return '/new/coronarografia'
   }
 
+  if (kind === 'cateterismo_destro') {
+    return '/new/cateterismo-destro'
+  }
+
   return '/new/coronarografia-angioplastica'
 }
 
@@ -263,35 +301,47 @@ export async function saveEntry(input: ProcedureEntryDraft) {
     syncError: null,
   }
 
-  const nextEntry: ProcedureEntry =
-    parsedInput.procedureKind === 'coronarografia'
-      ? {
-          ...baseEntry,
-          procedureKind: 'coronarografia',
-          details: {
-            kind: 'coronarografia',
-            accessSite: parsedInput.details.accessSite,
-            hemostasis: parsedInput.details.hemostasis,
-            cannulations: parsedInput.details.cannulations,
-            functionalTests: parsedInput.details.functionalTests,
-          },
-        }
-      : {
-          ...baseEntry,
-          procedureKind: 'coronarografia_angioplastica',
-          details: {
-            kind: 'coronarografia_angioplastica',
-            accessSite: parsedInput.details.accessSite,
-            hemostasis: parsedInput.details.hemostasis,
-            cannulations: parsedInput.details.cannulations,
-            functionalTests: parsedInput.details.functionalTests,
-            angioplastyTechniques: parsedInput.details.angioplastyTechniques,
-            treatments: parsedInput.details.treatments,
-            imaging: parsedInput.details.imaging,
-            plaqueDebulking: parsedInput.details.plaqueDebulking,
-            treatedSegments: parsedInput.details.treatedSegments,
-          },
-        }
+  let nextEntry: ProcedureEntry
+
+  if (parsedInput.procedureKind === 'coronarografia') {
+    nextEntry = {
+      ...baseEntry,
+      procedureKind: 'coronarografia',
+      details: {
+        kind: 'coronarografia',
+        accessSite: parsedInput.details.accessSite,
+        hemostasis: parsedInput.details.hemostasis,
+        cannulations: parsedInput.details.cannulations,
+        functionalTests: parsedInput.details.functionalTests,
+      },
+    }
+  } else if (parsedInput.procedureKind === 'cateterismo_destro') {
+    nextEntry = {
+      ...baseEntry,
+      procedureKind: 'cateterismo_destro',
+      details: {
+        kind: 'cateterismo_destro',
+        accessSite: parsedInput.details.accessSite,
+      },
+    }
+  } else {
+    nextEntry = {
+      ...baseEntry,
+      procedureKind: 'coronarografia_angioplastica',
+      details: {
+        kind: 'coronarografia_angioplastica',
+        accessSite: parsedInput.details.accessSite,
+        hemostasis: parsedInput.details.hemostasis,
+        cannulations: parsedInput.details.cannulations,
+        functionalTests: parsedInput.details.functionalTests,
+        angioplastyTechniques: parsedInput.details.angioplastyTechniques,
+        treatments: parsedInput.details.treatments,
+        imaging: parsedInput.details.imaging,
+        plaqueDebulking: parsedInput.details.plaqueDebulking,
+        treatedSegments: parsedInput.details.treatedSegments,
+      },
+    }
+  }
 
   await db.transaction('rw', db.entries, db.syncQueue, async () => {
     await db.entries.put(nextEntry)

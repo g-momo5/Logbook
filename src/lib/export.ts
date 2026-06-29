@@ -53,9 +53,19 @@ export function serializeEntriesToCsv(entries: ProcedureEntry[]) {
       entry.operatorRole,
       entry.cardSummary,
       getAccessSiteLabel(entry.details.accessSite) ?? '',
-      getHemostasisLabel(entry.details.hemostasis) ?? '',
-      serializeArray(entry.details.cannulations.map((value) => getCannulationLabel(value))),
-      serializeArray((entry.details.functionalTests ?? []).map((value) => getFunctionalTestLabel(value))),
+      entry.procedureKind === 'cateterismo_destro'
+        ? ''
+        : getHemostasisLabel(entry.details.hemostasis) ?? '',
+      serializeArray(
+        entry.procedureKind === 'cateterismo_destro'
+          ? []
+          : entry.details.cannulations.map((value) => getCannulationLabel(value)),
+      ),
+      serializeArray(
+        entry.procedureKind === 'cateterismo_destro'
+          ? []
+          : (entry.details.functionalTests ?? []).map((value) => getFunctionalTestLabel(value)),
+      ),
       serializeArray(
         entry.procedureKind === 'coronarografia_angioplastica'
           ? entry.details.angioplastyTechniques.map((value) => getAngioplastyTechniqueLabel(value))

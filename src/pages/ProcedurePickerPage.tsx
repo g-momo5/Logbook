@@ -11,7 +11,7 @@ function ProcedurePickerPage() {
           Seleziona una nuova procedura
         </h2>
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          Le prime due procedure sono già strutturate. Le altre restano visibili ma bloccate finché
+          Le procedure attive sono già strutturate. Le altre restano visibili ma bloccate finché
           non definisci i rispettivi campi clinici.
         </p>
       </section>

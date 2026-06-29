@@ -104,6 +104,10 @@ function App() {
                 <EntryEditorPage mode="create" procedureKind="coronarografia_angioplastica" />
               }
             />
+            <Route
+              path="/new/cateterismo-destro"
+              element={<EntryEditorPage mode="create" procedureKind="cateterismo_destro" />}
+            />
             <Route path="/logbook" element={<LogbookPage />} />
             <Route path="/logbook/:entryId" element={<EntryEditorPage mode="edit" />} />
             <Route path="/stats" element={<StatsPage />} />
