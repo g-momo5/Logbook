@@ -77,9 +77,9 @@ export function serializeEntriesToCsv(entries: ProcedureEntry[]) {
           : [],
       ),
       serializeArray(
-        entry.procedureKind === 'coronarografia_angioplastica'
-          ? entry.details.imaging.map((value) => getImagingLabel(value))
-          : [],
+        entry.procedureKind === 'cateterismo_destro'
+          ? []
+          : (entry.details.imaging ?? []).map((value) => getImagingLabel(value)),
       ),
       serializeArray(
         entry.procedureKind === 'coronarografia_angioplastica'

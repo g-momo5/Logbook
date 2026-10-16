@@ -29,6 +29,7 @@ const coronarografiaEntry: ProcedureEntry = {
     hemostasis: null,
     cannulations: ['coronaria_sinistra'],
     functionalTests: ['qfr'],
+    imaging: ['oct'],
   },
   createdAt: '2026-03-03T10:00:00.000Z',
   updatedAt: '2026-03-03T10:00:00.000Z',
@@ -167,9 +168,9 @@ describe('stats drill-down helpers', () => {
       },
       {
         metric: 'byImaging',
-        label: 'IVUS',
-        expectedMatch: angioplasticaEntry,
-        expectedNoMatch: coronarografiaEntry,
+        label: 'OCT',
+        expectedMatch: coronarografiaEntry,
+        expectedNoMatch: angioplasticaEntry,
       },
       {
         metric: 'byDebulking',

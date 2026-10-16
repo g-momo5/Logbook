@@ -330,6 +330,7 @@ function toLocalEntry(row: ProcedureEntryRemoteRow): ProcedureEntry {
         functionalTests: asStringArray(
           rawDetails.functionalTests,
         ) as CoronarografiaDetails['functionalTests'],
+        imaging: asStringArray(rawDetails.imaging) as CoronarografiaDetails['imaging'],
       },
       createdAt: row.created_at,
       updatedAt: row.updated_at,

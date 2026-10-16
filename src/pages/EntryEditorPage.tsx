@@ -239,7 +239,8 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
             : [],
         treatments:
           entry.procedureKind === 'coronarografia_angioplastica' ? entry.details.treatments : [],
-        imaging: entry.procedureKind === 'coronarografia_angioplastica' ? entry.details.imaging : [],
+        imaging:
+          entry.procedureKind === 'cateterismo_destro' ? [] : entry.details.imaging ?? [],
         plaqueDebulking:
           entry.procedureKind === 'coronarografia_angioplastica'
             ? entry.details.plaqueDebulking
@@ -393,6 +394,7 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
             hemostasis: form.hemostasis || null,
             cannulations: form.cannulations,
             functionalTests: form.functionalTests,
+            imaging: form.imaging,
           },
         })
       } else if (resolvedKind === 'cateterismo_destro') {
@@ -582,6 +584,17 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
                 onToggle={(value) => toggleSelection('functionalTests', value as FunctionalTest)}
               />
             </div>
+
+            <div>
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                Imaging
+              </span>
+              <MultiSelectGrid
+                options={imagingOptions}
+                values={form.imaging}
+                onToggle={(value) => toggleSelection('imaging', value as ImagingType)}
+              />
+            </div>
           </>
         ) : null}
 
@@ -608,17 +621,6 @@ function EntryEditorPage({ mode, procedureKind }: EntryEditorPageProps) {
                 options={treatmentOptions}
                 values={form.treatments}
                 onToggle={(value) => toggleSelection('treatments', value as TreatmentType)}
-              />
-            </div>
-
-            <div>
-              <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                Imaging
-              </span>
-              <MultiSelectGrid
-                options={imagingOptions}
-                values={form.imaging}
-                onToggle={(value) => toggleSelection('imaging', value as ImagingType)}
               />
             </div>
 

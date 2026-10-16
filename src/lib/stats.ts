@@ -150,9 +150,9 @@ export function getStatsFromEntries(entries: ProcedureEntry[], query: StatsQuery
   )
   const byImaging = mapCountByLabel(
     activeEntries.flatMap((entry) =>
-      entry.procedureKind === 'coronarografia_angioplastica'
-        ? entry.details.imaging.map((item) => getImagingLabel(item))
-        : [],
+      entry.procedureKind === 'cateterismo_destro'
+        ? []
+        : (entry.details.imaging ?? []).map((item) => getImagingLabel(item)),
     ),
   )
   const byDebulking = mapCountByLabel(

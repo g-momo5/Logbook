@@ -111,6 +111,7 @@ const coronarografiaDraftSchema = z.object({
     hemostasis: hemostasisSchema.nullable(),
     cannulations: uniqueCannulationsSchema,
     functionalTests: uniqueFunctionalTestsSchema,
+    imaging: uniqueImagingSchema,
   }),
 })
 
@@ -313,6 +314,7 @@ export async function saveEntry(input: ProcedureEntryDraft) {
         hemostasis: parsedInput.details.hemostasis,
         cannulations: parsedInput.details.cannulations,
         functionalTests: parsedInput.details.functionalTests,
+        imaging: parsedInput.details.imaging,
       },
     }
   } else if (parsedInput.procedureKind === 'cateterismo_destro') {

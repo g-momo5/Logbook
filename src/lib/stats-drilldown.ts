@@ -146,8 +146,8 @@ export function doesEntryMatchStatsMetric(entry: ProcedureEntry, metric: StatsMe
 
   if (metric === 'byImaging') {
     return (
-      entry.procedureKind === 'coronarografia_angioplastica' &&
-      entry.details.imaging.some((item) => getImagingLabel(item) === label)
+      entry.procedureKind !== 'cateterismo_destro' &&
+      (entry.details.imaging ?? []).some((item) => getImagingLabel(item) === label)
     )
   }
 

@@ -19,6 +19,7 @@ const baseEntries: ProcedureEntry[] = [
       hemostasis: null,
       cannulations: ['coronaria_sinistra', 'ventricolografia'],
       functionalTests: ['ffr'],
+      imaging: ['oct'],
     },
     createdAt: '2026-03-03T10:00:00.000Z',
     updatedAt: '2026-03-03T10:00:00.000Z',
@@ -113,7 +114,10 @@ describe('stats helpers', () => {
       { label: 'Scoring balloon', count: 1 },
     ])
     expect(stats.byTreatment).toEqual([{ label: 'DES', count: 1 }])
-    expect(stats.byImaging).toEqual([{ label: 'IVUS', count: 1 }])
+    expect(stats.byImaging).toEqual([
+      { label: 'IVUS', count: 1 },
+      { label: 'OCT', count: 1 },
+    ])
     expect(stats.byDebulking).toEqual([{ label: 'ShockWave', count: 1 }])
     expect(stats.byTreatedSegment).toEqual([
       { label: 'IVA · Medio', count: 1 },

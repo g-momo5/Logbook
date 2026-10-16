@@ -79,6 +79,7 @@ export interface CoronarografiaDetails {
   hemostasis: HemostasisType | null
   cannulations: Cannulation[]
   functionalTests: FunctionalTest[]
+  imaging: ImagingType[]
 }
 
 export interface CoronarografiaAngioplasticaDetails {
